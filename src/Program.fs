@@ -2,10 +2,6 @@
 
 open Sayit.Config
 
-open System
-open System.IO
-open System.Reflection
-
 open Microsoft.CognitiveServices.Speech
 
 [<EntryPoint>]
