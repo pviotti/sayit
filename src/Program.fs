@@ -60,16 +60,13 @@ let writeConfig (subKey:string, subReg:string, voice:string, speed:int) =
 
 let configWizard() =
     Console.WriteLine "Please fill the following:"
-    Console.Write "Subscription key: "
-    let subKey = Console.ReadLine()
-    Console.Write "Subscription region: "
-    let subReg = Console.ReadLine()
-    Console.Write "Voice [en-US-GuyNeural]: "
-    let voice = Console.ReadLine()
-    Console.Write "Speed [1]: "
-    let speed = int(Console.ReadLine())
+    let ask (prompt:string) = Console.Write prompt ; Console.ReadLine()
+    let subKey = ask "Subscription key: "
+    let subReg = ask "Subscription region: "
+    let voice = ask "Voice [en-US-GuyNeural]: "
+    let speed = int(ask "Speed [1]: ")
     writeConfig (subKey, subReg, voice, speed)
-    Console.WriteLine("The configuration has been written to %s.", getConfigFilePath())
+    ("The configuration has been written to " + getConfigFilePath()) |> Console.WriteLine
 
 [<EntryPoint>]
 let main argv =
