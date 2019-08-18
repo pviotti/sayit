@@ -8,20 +8,23 @@ open Microsoft.CognitiveServices.Speech
 let main argv =
     let (config, arguments) = Config.getConfiguration(argv)
 
-    let subid = config.GetResult SubscriptionId
-    let subreg = config.GetResult SubscriptionRegion
+    let subKey = config.GetResult SubscriptionId
+    let subRegion = config.GetResult SubscriptionRegion
     let voice = config.GetResult Voice
-    //printfn "%s - %s" subid subreg
-    let speechConfig = SpeechConfig.FromSubscription(subid, subreg)
+    let input = arguments.GetResult Input
+
+    let speechConfig = SpeechConfig.FromSubscription(subKey, subRegion)
     speechConfig.SpeechSynthesisVoiceName <- voice
     use synthetizer = new SpeechSynthesizer(speechConfig)
-    let task = synthetizer.SpeakTextAsync <| arguments.GetResult Input
+    let task = synthetizer.SpeakTextAsync input
     task.Wait()
     match task.Result.Reason with
         | ResultReason.Canceled ->
             let cancellation = SpeechSynthesisCancellationDetails.FromResult task.Result
             if CancellationReason.Error = cancellation.Reason then
-                printfn "ERROR: ErrorCode=%A" cancellation.ErrorCode
-                printfn "ERROR: ErrorDetails=%A" cancellation.ErrorDetails
+                match cancellation.ErrorCode with
+                | CancellationErrorCode.ConnectionFailure -> printfn "Error: please check your internet connection."
+                | CancellationErrorCode.AuthenticationFailure -> printfn "Error: please check your credentials."
+                | _ -> printfn "Error: ErrorCode=%A \n ErrorDetails=%A" cancellation.ErrorCode cancellation.ErrorDetails
         | _ -> ()
     0
