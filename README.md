@@ -1,5 +1,7 @@
 # SayIt :loudspeaker:
 
+[![Build Status](https://dev.azure.com/pviotti/gh-pipelines/_apis/build/status/pviotti.sayit?branchName=master)](https://dev.azure.com/pviotti/gh-pipelines/_build/latest?definitionId=3&branchName=master)  
+
 SayIt is a simple command line tool that pronounces written text.
 You can use it to create audio recordings of your text files or
 to improve your pronunciation in a foreign language.
