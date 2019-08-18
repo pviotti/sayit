@@ -25,6 +25,6 @@ let main argv =
                 match cancellation.ErrorCode with
                 | CancellationErrorCode.ConnectionFailure -> printfn "Error: please check your internet connection."
                 | CancellationErrorCode.AuthenticationFailure -> printfn "Error: please check your credentials."
-                | _ -> printfn "Error: ErrorCode=%A \n ErrorDetails=%A" cancellation.ErrorCode cancellation.ErrorDetails
+                | _ -> printfn "Error: ErrorCode=%A\nErrorDetails=%A" cancellation.ErrorCode cancellation.ErrorDetails
         | _ -> ()
     0
