@@ -1,5 +1,19 @@
 # Dev notes
 
+## Package a .Net application
+
+### Linux
+
+There appear to be very few guidelines on how to package and distribute a .Net
+Core application for Linux.
+For Arch Linux, the instructions are outdated and refer to Mono: https://wiki.archlinux.org/index.php/CLR_package_guidelines
+The very few packages using the .Net Core runtime on the Arch Linux repos include
+all dependencies except the runtime itself - see for instance embyserver https://www.archlinux.org/packages/community/any/emby-server/
+
+## Windows
+
+*TODO*
+
 ## Build with CoreRT
 
 Steps to build with [CoreRT] on Arch Linux updated to 8/2019:
