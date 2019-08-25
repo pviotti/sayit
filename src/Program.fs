@@ -4,14 +4,20 @@ open Sayit.Config
 
 open Microsoft.CognitiveServices.Speech
 
+let getVoiceId (voice:VoiceType) =
+    match voice with
+    | En -> "en-US-GuyNeural"
+    | It -> "it-IT-ElsaNeural"
+    | Fr -> "fr-FR-Julie-Apollo"
+
 [<EntryPoint>]
 let main argv =
-    let (config, arguments) = Config.getConfiguration(argv)
+    let config = Config.getConfiguration(argv)
 
     let subKey = config.GetResult SubscriptionId
     let subRegion = config.GetResult SubscriptionRegion
-    let voice = config.GetResult Voice
-    let input = arguments.GetResult Input
+    let voice = getVoiceId (config.GetResult Voice)
+    let input = config.GetResult Input
 
     let speechConfig = SpeechConfig.FromSubscription(subKey, subRegion)
     speechConfig.SpeechSynthesisVoiceName <- voice
