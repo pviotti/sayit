@@ -14,26 +14,26 @@ let CONFIG_FILE = "sayit.config"
 type Env = Environment
 
 // Create discriminated unions from string - http://fssnip.net/9l
-let toString (x:'a) =
+let toString (x : 'a) =
     match FSharpValue.GetUnionFields(x, typeof<'a>) with
     | case, _ -> case.Name
-let fromString<'a> (s:string) =
+let fromString<'a> (s : string) =
     match FSharpType.GetUnionCases typeof<'a> |> Array.filter (fun case -> case.Name = s) with
-    |[|case|] -> Some(FSharpValue.MakeUnion(case,[||]) :?> 'a)
-    |_ -> None
+    | [| case |] -> Some(FSharpValue.MakeUnion(case, [||]) :?> 'a)
+    | _ -> None
 
-type VoiceType = En | It | Fr with
+type VoiceType = | En | It | Fr with
     override this.ToString() = toString this
     static member fromString s = fromString<VoiceType> s
 
 type Args =
-    | [<NoAppSettings>] Version
-    | [<AltCommandLine("-v")>] Voice of VoiceType
-    | [<AltCommandLine("-s")>] Speed of speed:int
-    | [<AltCommandLine("-o") ; NoAppSettings>] Output of output:string
-    | [<NoCommandLine ; Mandatory>] SubscriptionId of subId:string
-    | [<NoCommandLine ; Mandatory>] SubscriptionRegion of subRegion:string
-    | [<MainCommand ; Mandatory>] Input of input:string
+    |  [<NoAppSettings>] Version
+    |  [<AltCommandLine("-v")>] Voice of VoiceType
+    |  [<AltCommandLine("-s")>] Speed of speed : int
+    |  [<AltCommandLine("-o") ; NoAppSettings>] Output of output : string
+    |  [<NoCommandLine ; Mandatory>] SubscriptionId of subId : string
+    |  [<NoCommandLine ; Mandatory>] SubscriptionRegion of subRegion : string
+    |  [<MainCommand ; Mandatory>] Input of input : string
 with
     interface IArgParserTemplate with
         member s.Usage =
@@ -53,33 +53,33 @@ let getConfigFilePath() =
         string Path.DirectorySeparatorChar +
         CONFIG_FILE
 
-let writeConfig (subKey:string, subReg:string, voice:VoiceType, speed:int) =
+let writeConfig (subKey : string, subReg : string, voice : VoiceType, speed : int) =
     let parser = ArgumentParser.Create<Args>()
     let xml = parser.PrintAppSettingsArguments [
-        Args.SubscriptionId subKey ;
-        Args.SubscriptionRegion subReg ;
-        Args.Voice voice ;
+        Args.SubscriptionId subKey;
+        Args.SubscriptionRegion subReg;
+        Args.Voice voice;
         Args.Speed speed
     ]
     File.WriteAllText(getConfigFilePath(), xml, Text.Encoding.UTF8)
 
 let configWizard() =
     Console.WriteLine "Please provide the following default configurations:"
-    let ask (prompt:string) = Console.Write prompt ; Console.ReadLine()
+    let ask (prompt : string) = Console.Write prompt; Console.ReadLine()
     let subId = ask "Subscription id: "
     let subReg = ask "Subscription region: "
     let voice =
-        match VoiceType.fromString(ask "Default voice [en]: ") with
+        match VoiceType.fromString (ask "Default voice [en]: ") with
         | Some x -> x
         | None -> En
-    let speed = int(ask "Default speed [1]: ")
+    let speed = int (ask "Default speed [1]: ")
     writeConfig (subId, subReg, voice, speed)
     ("The configuration has been written to " + getConfigFilePath()) |> Console.WriteLine
 
 let getConfiguration argv =
-    let errorHandler = ProcessExiter(colorizer = function ErrorCode.HelpText -> None | _ -> Some ConsoleColor.Red)
-    let parser = ArgumentParser.Create<Args>(programName = PROGRAM_NAME, errorHandler = errorHandler)
-    if not(File.Exists(getConfigFilePath())) then configWizard()
+    let errorHandler = ProcessExiter(colorizer = function | ErrorCode.HelpText -> None | _ -> Some ConsoleColor.Red)
+    let parser = ArgumentParser.Create<Args> (programName = PROGRAM_NAME, errorHandler = errorHandler)
+    if not (File.Exists(getConfigFilePath())) then configWizard()
     let confReader = ConfigurationReader.FromAppSettingsFile(getConfigFilePath())
     let config = parser.Parse(argv, confReader, ignoreMissing = true)
 

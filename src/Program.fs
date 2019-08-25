@@ -1,4 +1,4 @@
-﻿module Sayit.Program
+module Sayit.Program
 
 open Sayit.Config
 
@@ -7,13 +7,13 @@ open Microsoft.CognitiveServices.Speech
 open Microsoft.CognitiveServices.Speech.Audio
 
 
-let getVoiceId (voice:VoiceType) =
+let getVoiceId (voice : VoiceType) =
     match voice with
     | En -> "en-US-GuyNeural"
     | It -> "it-IT-ElsaNeural"
     | Fr -> "fr-FR-Julie-Apollo"
 
-let handleSynthesisResult (task:Task<SpeechSynthesisResult>) =
+let handleSynthesisResult (task : Task<SpeechSynthesisResult>) =
     task.Wait()
     match task.Result.Reason with
     | ResultReason.Canceled ->
@@ -27,7 +27,7 @@ let handleSynthesisResult (task:Task<SpeechSynthesisResult>) =
 
 [<EntryPoint>]
 let main argv =
-    let config = Config.getConfiguration(argv)
+    let config = Config.getConfiguration (argv)
 
     let subKey = config.GetResult SubscriptionId
     let subRegion = config.GetResult SubscriptionRegion
@@ -39,7 +39,7 @@ let main argv =
 
     if config.Contains Output then
         let output = config.GetResult Output
-        speechConfig.SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)
+        speechConfig.SetSpeechSynthesisOutputFormat (SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)
         use fileOutput = AudioConfig.FromWavFileOutput(output)
         use synthetizer = new SpeechSynthesizer(speechConfig, fileOutput)
         handleSynthesisResult (synthetizer.SpeakTextAsync input)
