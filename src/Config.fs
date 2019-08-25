@@ -30,6 +30,7 @@ type Args =
     | [<NoAppSettings>] Version
     | [<AltCommandLine("-v")>] Voice of VoiceType
     | [<AltCommandLine("-s")>] Speed of speed:int
+    | [<AltCommandLine("-o") ; NoAppSettings>] Output of output:string
     | [<NoCommandLine ; Mandatory>] SubscriptionId of subId:string
     | [<NoCommandLine ; Mandatory>] SubscriptionRegion of subRegion:string
     | [<MainCommand ; Mandatory>] Input of input:string
@@ -40,6 +41,7 @@ with
             | Version _ -> "print sayit version."
             | Voice _ -> "specify the voice."
             | Speed _ -> "specify the speed."
+            | Output _ -> "output file."
             | Input _ -> "the text to be pronounced"
             | SubscriptionId _ -> "the subscription id of the Azure Cognitive Services resource"
             | SubscriptionRegion _ -> "the region code of the Azure Cognitive Services resource"
