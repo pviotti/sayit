@@ -29,7 +29,6 @@ type VoiceType = | En | It | Fr with
 type Args =
     |  [<NoAppSettings>] Version
     |  [<AltCommandLine("-v")>] Voice of VoiceType
-    |  [<AltCommandLine("-s")>] Speed of speed : int
     |  [<AltCommandLine("-o") ; NoAppSettings>] Output of output : string
     |  [<NoCommandLine ; Mandatory>] SubscriptionId of subId : string
     |  [<NoCommandLine ; Mandatory>] SubscriptionRegion of subRegion : string
@@ -40,7 +39,6 @@ with
             match s with
             | Version _ -> "print sayit version."
             | Voice _ -> "specify the voice."
-            | Speed _ -> "specify the speed."
             | Output _ -> "output file."
             | Input _ -> "the text to be pronounced"
             | SubscriptionId _ -> "the subscription id of the Azure Cognitive Services resource"
@@ -59,7 +57,6 @@ let writeConfig (subKey : string, subReg : string, voice : VoiceType, speed : in
         Args.SubscriptionId subKey;
         Args.SubscriptionRegion subReg;
         Args.Voice voice;
-        Args.Speed speed
     ]
     File.WriteAllText(getConfigFilePath(), xml, Text.Encoding.UTF8)
 
