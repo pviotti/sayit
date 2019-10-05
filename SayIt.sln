@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SayIt", "src\SayIt.fsproj", "{7B0AA10A-FA8F-4CB0-A68E-6C16E4DA951D}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SayIt", "SayIt\SayIt.fsproj", "{7B0AA10A-FA8F-4CB0-A68E-6C16E4DA951D}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SayIt.Tests", "SayIt.Tests\SayIt.Tests.fsproj", "{FDE8965A-6A3F-47D6-961C-52EB737089F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +32,17 @@ Global
 		{7B0AA10A-FA8F-4CB0-A68E-6C16E4DA951D}.Release|x64.Build.0 = Release|Any CPU
 		{7B0AA10A-FA8F-4CB0-A68E-6C16E4DA951D}.Release|x86.ActiveCfg = Release|Any CPU
 		{7B0AA10A-FA8F-4CB0-A68E-6C16E4DA951D}.Release|x86.Build.0 = Release|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Release|x64.Build.0 = Release|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{FDE8965A-6A3F-47D6-961C-52EB737089F7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

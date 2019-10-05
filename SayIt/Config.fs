@@ -53,7 +53,7 @@ let getConfigFilePath() =
     Env.GetFolderPath(Env.SpecialFolder.ApplicationData, Env.SpecialFolderOption.Create)
     + string Path.DirectorySeparatorChar + CONFIG_FILE
 
-let writeConfig (subKey: string, subReg: string, voice: VoiceType, speed: int) =
+let writeConfig (subKey: string, subReg: string, voice: VoiceType) =
     let parser = ArgumentParser.Create<Args>()
 
     let xml =
@@ -77,8 +77,7 @@ let configWizard() =
         | Some x -> x
         | None -> En
 
-    let speed = int (ask "Default speed [1]: ")
-    writeConfig (subId, subReg, voice, speed)
+    writeConfig (subId, subReg, voice)
     ("The configuration has been written to " + getConfigFilePath()) |> Console.WriteLine
 
 let getConfiguration argv =
