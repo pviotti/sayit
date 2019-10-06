@@ -73,7 +73,7 @@ let configWizard() =
     let subReg = ask "Subscription region: "
 
     let voice =
-        match VoiceType.FromString (ask "Default voice [en]: ") with
+        match VoiceType.FromString(ask "Default voice [en]: ") with
         | Some x -> x
         | None -> En
 
@@ -90,10 +90,4 @@ let getConfiguration argv =
     let parser = ArgumentParser.Create<Args>(programName = PROGRAM_NAME, errorHandler = errorHandler)
     if not (File.Exists(getConfigFilePath())) then configWizard()
     let confReader = ConfigurationReader.FromAppSettingsFile(getConfigFilePath())
-    let config = parser.Parse(argv, confReader, ignoreMissing = true)
-
-    if config.Contains Args.Version then
-        printVersion()
-        Env.Exit 0
-
-    config
+    parser.Parse(argv, confReader, ignoreMissing = true)

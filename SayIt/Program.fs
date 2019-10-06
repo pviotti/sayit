@@ -20,11 +20,28 @@ let handleSynthesisResult (task: Task<SpeechSynthesisResult>) =
         let cancellation = SpeechSynthesisCancellationDetails.FromResult task.Result
         if CancellationReason.Error = cancellation.Reason then
             match cancellation.ErrorCode with
-            | CancellationErrorCode.ConnectionFailure -> printfn "Error: please check your internet connection."
-            | CancellationErrorCode.AuthenticationFailure -> printfn "Error: please check your credentials."
+            | CancellationErrorCode.ConnectionFailure -> 
+                printfn "Error: please check your internet connection."
+            | CancellationErrorCode.AuthenticationFailure -> 
+                printfn "Error: please check your credentials."
             | _ ->
                 printfn "Error: ErrorCode=%A\nErrorDetails=%A" cancellation.ErrorCode cancellation.ErrorDetails
-    | _ -> ()
+        1
+    | _ -> 0
+
+let performSpeechSynthesis(config: Argu.ParseResults<Args>, speechConfig: SpeechConfig) =
+    if config.Contains Version then
+        Config.printVersion()
+        0
+    elif config.Contains Output then
+        let output = config.GetResult Output
+        speechConfig.SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)
+        use fileOutput = AudioConfig.FromWavFileOutput(output)
+        use synthetizer = new SpeechSynthesizer(speechConfig, fileOutput)
+        handleSynthesisResult (synthetizer.SpeakTextAsync (config.GetResult Input))
+    else
+        use synthetizer = new SpeechSynthesizer(speechConfig)
+        handleSynthesisResult (synthetizer.SpeakTextAsync (config.GetResult Input))
 
 [<EntryPoint>]
 let main argv =
@@ -33,18 +50,8 @@ let main argv =
     let subKey = config.GetResult SubscriptionId
     let subRegion = config.GetResult SubscriptionRegion
     let voice = getVoiceId (config.GetResult Voice)
-    let input = config.GetResult Input
 
     let speechConfig = SpeechConfig.FromSubscription(subKey, subRegion)
     speechConfig.SpeechSynthesisVoiceName <- voice
 
-    if config.Contains Output then
-        let output = config.GetResult Output
-        speechConfig.SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)
-        use fileOutput = AudioConfig.FromWavFileOutput(output)
-        use synthetizer = new SpeechSynthesizer(speechConfig, fileOutput)
-        handleSynthesisResult (synthetizer.SpeakTextAsync input)
-    else
-        use synthetizer = new SpeechSynthesizer(speechConfig)
-        handleSynthesisResult (synthetizer.SpeakTextAsync input)
-    0
+    performSpeechSynthesis(config, speechConfig)
