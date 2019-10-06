@@ -1,8 +1,14 @@
 module Tests
 
-open System
 open Xunit
 
+open Sayit.Program
+
 [<Fact>]
-let ``My test`` () =
-    Assert.True(true)
+let ``Failing run`` () =
+    let ret = main([|"--version"|])
+    Assert.Equal(0, ret)
+
+
+[<EntryPoint>]
+let main argv = 0
