@@ -1,6 +1,6 @@
-module Sayit.Program
+module SayIt.Program
 
-open Sayit.Config
+open SayIt.Config
 
 open System.Threading.Tasks
 open Microsoft.CognitiveServices.Speech

@@ -1,4 +1,4 @@
-module Sayit.Config
+module SayIt.Config
 
 open System
 open System.IO
