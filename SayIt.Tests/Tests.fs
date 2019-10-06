@@ -1,13 +1,16 @@
 module Tests
 
 open Xunit
+open FsUnit.Xunit
 
 open Sayit.Program
 
-[<Fact>]
-let ``Failing run`` () =
-    let ret = main([|"--version"|])
-    Assert.Equal(0, ret)
+module ``SayIt general tests`` =
+
+    type SayitTests () = 
+        [<Fact>] 
+        member __.``when asked for version it should print it and exit with 0`` () =
+            Sayit.Program.main([|"--version"|]) |> should equal 0
 
 
 [<EntryPoint>]
