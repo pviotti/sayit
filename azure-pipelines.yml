@@ -1,8 +1,11 @@
 trigger:
+  branches:
+    include:
+    - '*'
   paths:
     exclude:
-      - *.md
-      - .gitignore
+    - README.md
+    - .gitignore
 
 strategy:
   matrix:
