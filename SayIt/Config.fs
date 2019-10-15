@@ -31,6 +31,7 @@ type VoiceType =
     static member FromString s = fromString<VoiceType> s
 
 type Args =
+    | [<NoAppSettings>] Setup
     | [<NoAppSettings>] Version
     | [<AltCommandLine("-v")>] Voice of VoiceType
     | [<AltCommandLine("-o"); NoAppSettings>] Output of output: string
@@ -40,12 +41,17 @@ type Args =
     interface IArgParserTemplate with
         member s.Usage =
             match s with
+            | Setup _ -> "setup configuration file"
             | Version _ -> "print sayit version."
             | Voice _ -> "specify the voice."
             | Output _ -> "output file."
             | Input _ -> "the text to be pronounced"
             | SubscriptionId _ -> "the subscription id of the Azure Cognitive Services resource"
             | SubscriptionRegion _ -> "the region code of the Azure Cognitive Services resource"
+
+type ConfigOrInt =
+    | Config of Argu.ParseResults<Args>
+    | ReturnVal of int
 
 let printVersion() = printfn "sayit version %s" VERSION
 
@@ -88,6 +94,16 @@ let getConfiguration argv =
              | _ -> Some ConsoleColor.Red)
 
     let parser = ArgumentParser.Create<Args>(programName = PROGRAM_NAME, errorHandler = errorHandler)
-    if not (File.Exists(getConfigFilePath())) then configWizard()
-    let confReader = ConfigurationReader.FromAppSettingsFile(getConfigFilePath())
-    parser.Parse(argv, confReader, ignoreMissing = true)
+    let config = parser.Parse(argv, ignoreMissing=true)
+
+    if config.Contains Version then
+        printVersion()
+        ReturnVal 0
+    elif config.Contains Setup then
+        configWizard()
+        ReturnVal 0
+    elif File.Exists(getConfigFilePath()) then
+        let confReader = ConfigurationReader.FromAppSettingsFile(getConfigFilePath())
+        Config (parser.Parse(argv, confReader, ignoreMissing = true))
+    else
+        Config config

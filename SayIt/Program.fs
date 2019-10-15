@@ -20,9 +20,9 @@ let handleSynthesisResult (task: Task<SpeechSynthesisResult>) =
         let cancellation = SpeechSynthesisCancellationDetails.FromResult task.Result
         if CancellationReason.Error = cancellation.Reason then
             match cancellation.ErrorCode with
-            | CancellationErrorCode.ConnectionFailure -> 
+            | CancellationErrorCode.ConnectionFailure ->
                 printfn "Error: please check your internet connection."
-            | CancellationErrorCode.AuthenticationFailure -> 
+            | CancellationErrorCode.AuthenticationFailure ->
                 printfn "Error: please check your credentials."
             | _ ->
                 printfn "Error: ErrorCode=%A\nErrorDetails=%A" cancellation.ErrorCode cancellation.ErrorDetails
@@ -30,10 +30,7 @@ let handleSynthesisResult (task: Task<SpeechSynthesisResult>) =
     | _ -> 0
 
 let performSpeechSynthesis(config: Argu.ParseResults<Args>, speechConfig: SpeechConfig) =
-    if config.Contains Version then
-        Config.printVersion()
-        0
-    elif config.Contains Output then
+    if config.Contains Output then
         let output = config.GetResult Output
         speechConfig.SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)
         use fileOutput = AudioConfig.FromWavFileOutput(output)
@@ -45,13 +42,15 @@ let performSpeechSynthesis(config: Argu.ParseResults<Args>, speechConfig: Speech
 
 [<EntryPoint>]
 let main argv =
-    let config = Config.getConfiguration (argv)
+    match Config.getConfiguration(argv) with
+    | Config config ->
+        let subKey = config.GetResult SubscriptionId
+        let subRegion = config.GetResult SubscriptionRegion
+        let voice = getVoiceId (config.GetResult Voice)
 
-    let subKey = config.GetResult SubscriptionId
-    let subRegion = config.GetResult SubscriptionRegion
-    let voice = getVoiceId (config.GetResult Voice)
+        let speechConfig = SpeechConfig.FromSubscription(subKey, subRegion)
+        speechConfig.SpeechSynthesisVoiceName <- voice
 
-    let speechConfig = SpeechConfig.FromSubscription(subKey, subRegion)
-    speechConfig.SpeechSynthesisVoiceName <- voice
-
-    performSpeechSynthesis(config, speechConfig)
+        performSpeechSynthesis(config, speechConfig)
+    | ReturnVal ret ->
+        ret
