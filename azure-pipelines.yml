@@ -46,9 +46,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: publish
-    publishWebProjects: True
     arguments: '-c $(BuildConfiguration) -f $(framework) /p:PublishSingleFile=true /p:PublishReadyToRun=true /p:UseAppHost=true --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: True
 
 - task: PublishBuildArtifacts@1
   inputs:
