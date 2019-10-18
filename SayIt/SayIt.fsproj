@@ -5,14 +5,14 @@
         <TargetFramework>netcoreapp3.0</TargetFramework>
     </PropertyGroup>
 
-    <PropertyGroup>
+    <!-- <PropertyGroup>
         <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
         <PublishSingleFile>true</PublishSingleFile>
-        <PublishTrimmed>true</PublishTrimmed>
+        <PublishTrimmed>true</PublishTrimmed> -->
 
         <!-- this increases size and reduces startup time -->
-        <PublishReadyToRun>true</PublishReadyToRun>
-    </PropertyGroup>
+        <!-- <PublishReadyToRun>true</PublishReadyToRun>
+    </PropertyGroup>-->
 
     <ItemGroup>
         <Compile Include="Config.fs" />

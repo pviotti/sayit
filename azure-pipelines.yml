@@ -34,27 +34,23 @@ steps:
   inputs:
     command: build
     projects: '**/*.fsproj'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '-c $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: Run tests
   inputs:
     command: test
     projects: '**/*Tests/*.fsproj'
-    arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code coverage"'
+    arguments: '-c $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
-  displayName: Install ReportGenerator tool
   inputs:
-    command: custom
-    custom: tool
-    arguments: install --tool-path . dotnet-reportgenerator-globaltool
+    command: publish
+    publishWebProjects: True
+    arguments: '-c $(BuildConfiguration) -f $(framework) /p:PublishSingleFile=true /p:PublishReadyToRun=true /p:UseAppHost=true --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: True
 
-- script: ./reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
-  displayName: Create reports
-
-- task: PublishCodeCoverageResults@1
-  displayName: Publish code coverage
+- task: PublishBuildArtifacts@1
   inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'sayit'
