@@ -11,10 +11,13 @@ strategy:
   matrix:
     Linux:
       imageName: 'ubuntu-latest'
+      rid: 'linux-x64'
     Mac:
       imageName: 'macos-latest'
+      rid: 'osx-x64'
     Windows:
       imageName: 'vs2017-win2016'
+      rid: 'win-x64'
 
 pool:
   vmImage: $(imageName)
@@ -49,7 +52,7 @@ steps:
     command: publish
     publishWebProjects: False
     projects: 'SayIt/SayIt.fsproj'
-    arguments: '-c $(BuildConfiguration) -f $(framework) /p:PublishSingleFile=true /p:PublishReadyToRun=true /p:UseAppHost=true --output $(Build.ArtifactStagingDirectory)'
+    arguments: '-c $(BuildConfiguration) -f $(framework) /p:RuntimeIdentifier=$(rid) /p:PublishSingleFile=true /p:PublishReadyToRun=true /p:UseAppHost=true --output $(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: Publish artifact
