@@ -46,6 +46,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: publish
+    projects: '**/SayIt.fsproj'
     arguments: '-c $(BuildConfiguration) -f $(framework) /p:PublishSingleFile=true /p:PublishReadyToRun=true /p:UseAppHost=true --output $(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
