@@ -21,10 +21,11 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  framework: netcoreapp3.0
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Install .NET Core SDK'
+  displayName: Install .NET Core SDK
   inputs:
     version: 3.0.100
 
@@ -36,7 +37,24 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  displayName: Run tests
   inputs:
     command: test
     projects: '**/*Tests/*.fsproj'
-    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+    arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code coverage"'
+
+- task: DotNetCoreCLI@2
+  displayName: Install ReportGenerator tool
+  inputs:
+    command: custom
+    custom: tool
+    arguments: install --tool-path . dotnet-reportgenerator-globaltool
+
+- script: reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
+  displayName: Create reports
+
+- task: PublishCodeCoverageResults@1
+  displayName: Publish code coverage
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml
