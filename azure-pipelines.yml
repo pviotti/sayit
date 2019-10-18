@@ -44,12 +44,15 @@ steps:
     arguments: '-c $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  displayName: Publish release
   inputs:
     command: publish
-    projects: '**/SayIt.fsproj'
+    publishWebProjects: False
+    projects: 'SayIt/SayIt.fsproj'
     arguments: '-c $(BuildConfiguration) -f $(framework) /p:PublishSingleFile=true /p:PublishReadyToRun=true /p:UseAppHost=true --output $(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
+  displayName: Publish artifact
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'sayit'
