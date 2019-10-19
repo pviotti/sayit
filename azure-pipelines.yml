@@ -11,20 +11,27 @@ strategy:
   matrix:
     Linux:
       imageName: 'ubuntu-latest'
+      rid: 'linux-x64'
+      artifact: 'sayit-linux-x64'
     Mac:
       imageName: 'macos-latest'
+      rid: 'osx-x64'
+      artifact: 'sayit-osx-x64'
     Windows:
       imageName: 'vs2017-win2016'
+      rid: 'win-x64'
+      artifact: 'sayit-win-x64'
 
 pool:
   vmImage: $(imageName)
 
 variables:
   buildConfiguration: 'Release'
+  framework: netcoreapp3.0
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Install .NET Core SDK'
+  displayName: Install .NET Core SDK
   inputs:
     version: 3.0.100
 
@@ -33,10 +40,25 @@ steps:
   inputs:
     command: build
     projects: '**/*.fsproj'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '-c $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  displayName: Run tests
   inputs:
     command: test
     projects: '**/*Tests/*.fsproj'
-    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+    arguments: '-c $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Publish release
+  inputs:
+    command: publish
+    publishWebProjects: False
+    projects: 'SayIt/SayIt.fsproj'
+    arguments: '-c $(BuildConfiguration) -f $(framework) /p:RuntimeIdentifier=$(rid) /p:PublishSingleFile=true /p:PublishReadyToRun=true /p:UseAppHost=true --output $(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish artifact
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: '$(artifact)'
