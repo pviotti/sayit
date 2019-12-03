@@ -15,9 +15,10 @@ let getVoiceId (voice: VoiceType) =
 
 let handleSynthesisResult (task: Task<SpeechSynthesisResult>) =
     task.Wait()
-    match task.Result.Reason with
+    use result = task.Result
+    match result.Reason with
     | ResultReason.Canceled ->
-        let cancellation = SpeechSynthesisCancellationDetails.FromResult task.Result
+        let cancellation = SpeechSynthesisCancellationDetails.FromResult result
         if CancellationReason.Error = cancellation.Reason then
             match cancellation.ErrorCode with
             | CancellationErrorCode.ConnectionFailure ->
@@ -27,7 +28,8 @@ let handleSynthesisResult (task: Task<SpeechSynthesisResult>) =
             | _ ->
                 printfn "Error: ErrorCode=%A\nErrorDetails=%A" cancellation.ErrorCode cancellation.ErrorDetails
         1
-    | _ -> 0
+    | _ -> 
+        0
 
 let performSpeechSynthesis(config: Argu.ParseResults<Args>, speechConfig: SpeechConfig) =
     if config.Contains Output then
