@@ -27,13 +27,13 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  framework: netcoreapp3.0
+  framework: netcoreapp3.1
 
 steps:
 - task: UseDotNet@2
   displayName: Install .NET Core SDK
   inputs:
-    version: 3.0.100
+    version: 3.1.100
 
 - task: DotNetCoreCLI@2
   displayName: Build
