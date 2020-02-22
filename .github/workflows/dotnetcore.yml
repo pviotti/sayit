@@ -31,5 +31,5 @@ jobs:
     - name: Upload runtime-dependent executable
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: sayit-dev
+        name: sayit-dev-${{ runner.os }}
         path:  SayIt/bin/Release/netcoreapp3.1/
