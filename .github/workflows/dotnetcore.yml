@@ -1,0 +1,84 @@
+name: .NET Core CI
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+    tags:
+      - 'v*'
+  pull_request:
+
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    name: Build and test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.100'
+  
+    - name: Test
+      run: dotnet test
+
+  
+  publish:
+    needs: test
+    name: Publish artifacts
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.100'
+  
+    - name: Publish debug artifact
+      run: |
+        export SHA=${GITHUB_SHA:0:7}
+        dotnet publish -c Debug -o ./sayit-dev-$SHA
+        echo ::set-env name=SHA::"${GITHUB_SHA:0:7}"
+
+    - name: Upload debug artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: sayit-dev-${{ env.SHA }}
+        path: sayit-dev-${{ env.SHA }}
+
+    - name: Publish release artifacts
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        # Strip git ref prefix from version
+        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+        
+        dotnet publish -c Release -r win-x64 --self-contained false -o ./sayit-$VERSION-win
+        dotnet publish -c Release -r linux-x64 --self-contained false -o ./sayit-$VERSION-linux
+        dotnet publish -c Release -r osx-x64 --self-contained false -o ./sayit-$VERSION-osx
+        dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true -o ./sayit-$VERSION-win-sc
+        dotnet publish -c Release -r linux-x64 /p:PublishSingleFile=true -o ./sayit-$VERSION-linux-sc
+        dotnet publish -c Release -r osx-x64 /p:PublishSingleFile=true -o ./sayit-$VERSION-osx-sc        
+        
+        zip -r sayit-$VERSION-win.zip sayit-$VERSION-win
+        zip -r sayit-$VERSION-linux.zip sayit-$VERSION-linux
+        zip -r sayit-$VERSION-osx.zip sayit-$VERSION-osx
+        zip -r sayit-$VERSION-win-sc.zip sayit-$VERSION-win-sc 
+        zip -r sayit-$VERSION-linux-sc.zip sayit-$VERSION-linux-sc
+        zip -r sayit-$VERSION-osx-sc.zip sayit-$VERSION-osx-sc
+    
+    - name: Create draft release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        draft: true
+        files: ./*.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
