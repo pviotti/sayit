@@ -33,8 +33,6 @@ jobs:
     needs: test
     name: Publish artifacts
     runs-on: ubuntu-latest
-    env:
-      SHA: ${GITHUB_SHA:0:5}
     
     steps:
     - uses: actions/checkout@v2
@@ -45,7 +43,9 @@ jobs:
         dotnet-version: '3.1.100'
   
     - name: Publish debug artifact
-      run: dotnet publish -c Debug -o ./sayit-dev-$SHA
+      run: |
+        export SHA=${GITHUB_SHA:0:5}
+        dotnet publish -c Debug -o ./sayit-dev-$SHA
 
     - name: Upload debug artifact
       uses: actions/upload-artifact@v1.0.0
