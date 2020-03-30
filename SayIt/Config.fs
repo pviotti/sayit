@@ -35,19 +35,19 @@ type Args =
     | [<NoAppSettings>] Version
     | [<AltCommandLine("-v")>] Voice of VoiceType
     | [<AltCommandLine("-o"); NoAppSettings>] Output of output: string
-    | [<NoCommandLine; Mandatory>] SubscriptionId of subId: string
-    | [<NoCommandLine; Mandatory>] SubscriptionRegion of subRegion: string
+    | [<NoCommandLine; Mandatory>] Key of key: string
+    | [<NoCommandLine; Mandatory>] Region of region: string
     | [<MainCommand; Mandatory>] Input of input: string
     interface IArgParserTemplate with
         member s.Usage =
             match s with
-            | Setup _ -> "setup configuration file"
-            | Version _ -> "print sayit version."
-            | Voice _ -> "specify the voice."
-            | Output _ -> "output file."
+            | Setup _ -> "setup the configuration file"
+            | Version _ -> "print sayit version"
+            | Voice _ -> "the voice"
+            | Output _ -> "the path of the output file"
             | Input _ -> "the text to be pronounced"
-            | SubscriptionId _ -> "the subscription id of the Azure Cognitive Services resource"
-            | SubscriptionRegion _ -> "the region code of the Azure Cognitive Services resource"
+            | Key _ -> "the subscription key of your Azure Cognitive Services resource"
+            | Region _ -> "the region identifier of your Azure Cognitive Services resource (see: https://aka.ms/speech/sdkregion)"
 
 type ConfigOrInt =
     | Config of Argu.ParseResults<Args>
@@ -59,14 +59,14 @@ let getConfigFilePath() =
     Env.GetFolderPath(Env.SpecialFolder.ApplicationData, Env.SpecialFolderOption.Create)
     + string Path.DirectorySeparatorChar + CONFIG_FILE
 
-let writeConfig (subKey: string, subReg: string, voice: VoiceType) =
+let writeConfig (key: string, region: string, voice: VoiceType) =
     let parser = ArgumentParser.Create<Args>()
 
     let xml =
         parser.PrintAppSettingsArguments
-            [ Args.SubscriptionId subKey
-              Args.SubscriptionRegion subReg
-              Args.Voice voice ]
+            [ Key key
+              Region region
+              Voice voice ]
     File.WriteAllText(getConfigFilePath(), xml, Text.Encoding.UTF8)
 
 let configWizard() =
@@ -75,8 +75,8 @@ let configWizard() =
         Console.Write prompt
         Console.ReadLine()
 
-    let subId = ask "Subscription id: "
-    let subReg = ask "Subscription region: "
+    let subId = ask "Subscription key: "
+    let subReg = ask "Region identifier: "
 
     let voice =
         match VoiceType.FromString(ask "Default voice [en]: ") with
@@ -87,13 +87,7 @@ let configWizard() =
     ("The configuration has been written to " + getConfigFilePath()) |> Console.WriteLine
 
 let getConfiguration argv =
-    let errorHandler =
-        ProcessExiter
-            (colorizer = function
-             | ErrorCode.HelpText -> None
-             | _ -> Some ConsoleColor.Red)
-
-    let parser = ArgumentParser.Create<Args>(programName = PROGRAM_NAME, errorHandler = errorHandler)
+    let parser = ArgumentParser.Create<Args>(programName = PROGRAM_NAME, errorHandler = ProcessExiter())
     let config = parser.Parse(argv, ignoreMissing=true)
 
     if config.Contains Version then
