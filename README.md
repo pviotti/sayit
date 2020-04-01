@@ -15,8 +15,9 @@ Azure Cognitive Services [free tier][az-cs-price] includes 5 text-to-speech
 hours per month, which is often enough for personal use.
 
 You can download SayIt in the [release section][release].
-SayIt is currently distributed as self-contained .NET Core executable,
-which means you won't need to install the .NET Core runtime to use it.
+SayIt is currently distributed both as self-contained .NET Core executable
+(which means you won't need to install the .NET Core runtime to use it)
+and as CLR binary artifact.
 
 ## Usage
 
@@ -38,8 +39,9 @@ OPTIONS:
     --help                display this list of options.
 ```
 At the first use you're required to run the setup wizard (`./sayit --setup`)
-and enter the configuration parameters of your Azure Cognitive Services subscription,
-which are the subscription Id and the region moniker.
+and enter the configuration parameters of your Azure Cognitive Services resource,
+which are the subscription key (which you can find in the Azure portal) 
+and the region identifier (see [here][regionid]).
 SayIt will store these parameters in the configuration folder of the current
 user (e.g. `~/.config/` in Linux) as an [App Setting XML file][appsetting].
 
@@ -52,3 +54,4 @@ SayIt currently supported settings:
  [az-cs-price]: https://azure.microsoft.com/en-us/pricing/details/cognitive-services/speech-services/
  [release]: https://github.com/pviotti/sayit/releases
  [appsetting]: https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/file-schema/appsettings/
+ [regionid]: https://aka.ms/speech/sdkregion
