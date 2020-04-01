@@ -15,13 +15,13 @@ let fromString<'a> (s: string) =
 type VoiceType =
     | De
     | En
+    | Es
     | Fr
     | Hi
     | It
     | Ja
     | Pr
     | Ru
-    | Sp
     | Zh
     override this.ToString() = toString this
     static member FromString s = fromString<VoiceType> s
@@ -30,11 +30,11 @@ let getVoiceId (voice: VoiceType) =
     match voice with
     | De -> "de-DE-KatjaNeural"
     | En -> "en-US-GuyNeural"
+    | Es -> "es-ES-Laura-Apollo"
     | Fr -> "fr-FR-Julie-Apollo"
     | Hi -> "hi-IN-Kalpana-Apollo"
     | It -> "it-IT-ElsaNeural"
     | Ja -> "ja-JP-Ayumi-Apollo"
     | Pr -> "pt-BR-FranciscaNeural"
     | Ru -> "ru-RU-Irina-Apollo"
-    | Sp -> "es-ES-Laura-Apollo"
     | Zh -> "zh-CN-XiaoxiaoNeural"
