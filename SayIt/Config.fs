@@ -3,32 +3,16 @@ module SayIt.Config
 open System
 open System.IO
 open System.Reflection
-open Microsoft.FSharp.Reflection
 
 open Argu
+
+open SayIt.Voices
 
 let VERSION = Assembly.GetExecutingAssembly().GetName().Version.ToString()
 let PROGRAM_NAME = "sayit"
 let CONFIG_FILE = "sayit.config"
 
 type Env = Environment
-
-// Create discriminated unions from string - http://fssnip.net/9l
-let toString (x: 'a) =
-    match FSharpValue.GetUnionFields(x, typeof<'a>) with
-    | case, _ -> case.Name
-
-let fromString<'a> (s: string) =
-    match FSharpType.GetUnionCases typeof<'a> |> Array.filter (fun case -> case.Name = s) with
-    | [| case |] -> Some(FSharpValue.MakeUnion(case, [||]) :?> 'a)
-    | _ -> None
-
-type VoiceType =
-    | En
-    | It
-    | Fr
-    override this.ToString() = toString this
-    static member FromString s = fromString<VoiceType> s
 
 type Args =
     | [<NoAppSettings>] Setup

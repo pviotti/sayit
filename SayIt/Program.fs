@@ -1,17 +1,12 @@
 module SayIt.Program
 
 open SayIt.Config
+open SayIt.Voices
 
 open System.Threading.Tasks
 open Microsoft.CognitiveServices.Speech
 open Microsoft.CognitiveServices.Speech.Audio
 
-
-let getVoiceId (voice: VoiceType) =
-    match voice with
-    | En -> "en-US-GuyNeural"
-    | It -> "it-IT-ElsaNeural"
-    | Fr -> "fr-FR-Julie-Apollo"
 
 let handleSynthesisResult (task: Task<SpeechSynthesisResult>) =
     task.Wait()
