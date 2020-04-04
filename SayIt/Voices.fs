@@ -20,7 +20,7 @@ type VoiceType =
     | Hi
     | It
     | Ja
-    | Pr
+    | Pt
     | Ru
     | Zh
     override this.ToString() = toString this
@@ -35,6 +35,12 @@ let getVoiceId (voice: VoiceType) =
     | Hi -> "hi-IN-Kalpana-Apollo"
     | It -> "it-IT-ElsaNeural"
     | Ja -> "ja-JP-Ayumi-Apollo"
-    | Pr -> "pt-BR-FranciscaNeural"
+    | Pt -> "pt-BR-FranciscaNeural"
     | Ru -> "ru-RU-Irina-Apollo"
     | Zh -> "zh-CN-XiaoxiaoNeural"
+
+let listVoices() =
+    let types = FSharpType.GetUnionCases typeof<VoiceType>
+    for t in types do
+        let id = getVoiceId (VoiceType.FromString(t.Name).Value)
+        printfn "%s - %s" (t.Name.ToLower()) id
