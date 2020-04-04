@@ -3,9 +3,10 @@ module SayIt.Config
 open System
 open System.IO
 open System.Reflection
-open Microsoft.FSharp.Reflection
 
 open Argu
+
+open SayIt.Voices
 
 let VERSION = Assembly.GetExecutingAssembly().GetName().Version.ToString()
 let PROGRAM_NAME = "sayit"
@@ -13,37 +14,22 @@ let CONFIG_FILE = "sayit.config"
 
 type Env = Environment
 
-// Create discriminated unions from string - http://fssnip.net/9l
-let toString (x: 'a) =
-    match FSharpValue.GetUnionFields(x, typeof<'a>) with
-    | case, _ -> case.Name
-
-let fromString<'a> (s: string) =
-    match FSharpType.GetUnionCases typeof<'a> |> Array.filter (fun case -> case.Name = s) with
-    | [| case |] -> Some(FSharpValue.MakeUnion(case, [||]) :?> 'a)
-    | _ -> None
-
-type VoiceType =
-    | En
-    | It
-    | Fr
-    override this.ToString() = toString this
-    static member FromString s = fromString<VoiceType> s
-
 type Args =
     | [<NoAppSettings>] Setup
     | [<NoAppSettings>] Version
+    | [<AltCommandLine("-lv"); NoAppSettings>] ListVoices
     | [<AltCommandLine("-v")>] Voice of VoiceType
     | [<AltCommandLine("-o"); NoAppSettings>] Output of output: string
     | [<NoCommandLine; Mandatory>] Key of key: string
     | [<NoCommandLine; Mandatory>] Region of region: string
-    | [<MainCommand; Mandatory>] Input of input: string
+    | [<MainCommand; Mandatory; NoAppSettings>] Input of input: string
     interface IArgParserTemplate with
         member s.Usage =
             match s with
             | Setup _ -> "setup the configuration file"
             | Version _ -> "print sayit version"
-            | Voice _ -> "the voice"
+            | ListVoices _ -> "list available voice shorthands, with their corresponding voice ids"
+            | Voice _ -> "the voice shorthand, which maps to one of the available voice ids (see https://aka.ms/speech/tts-languages)"
             | Output _ -> "the path of the output file"
             | Input _ -> "the text to be pronounced"
             | Key _ -> "the subscription key of your Azure Cognitive Services resource"
@@ -95,6 +81,9 @@ let getConfiguration argv =
         ReturnVal 0
     elif config.Contains Setup then
         configWizard()
+        ReturnVal 0
+    elif config.Contains ListVoices then
+        listVoices()
         ReturnVal 0
     elif File.Exists(getConfigFilePath()) then
         let confReader = ConfigurationReader.FromAppSettingsFile(getConfigFilePath())
