@@ -1,20 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <Version>0.3.0</Version>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Include="Voices.fs" />
-        <Compile Include="Config.fs" />
-        <Compile Include="Program.fs" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Argu" Version="6.0.0" />
-        <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.11.0" />
-    </ItemGroup>
-
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>0.3.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Utils.fs" />
+    <Compile Include="Formats.fs" />
+    <Compile Include="Voices.fs" />
+    <Compile Include="Config.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Argu" Version="6.0.0" />
+    <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.11.0" />
+  </ItemGroup>
 </Project>

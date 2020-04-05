@@ -2,6 +2,7 @@ module SayIt.Program
 
 open SayIt.Config
 open SayIt.Voices
+open SayIt.Formats
 
 open System.Threading.Tasks
 open Microsoft.CognitiveServices.Speech
@@ -27,7 +28,8 @@ let handleSynthesisResult (task: Task<SpeechSynthesisResult>) =
 let performSpeechSynthesis (config: Argu.ParseResults<Args>, speechConfig: SpeechConfig) =
     if config.Contains Output then
         let output = config.GetResult Output
-        speechConfig.SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)
+        let outputFormat = getFormatId (config.GetResult Format)
+        speechConfig.SetSpeechSynthesisOutputFormat(outputFormat)
         use fileOutput = AudioConfig.FromWavFileOutput(output)
         use synthetizer = new SpeechSynthesizer(speechConfig, fileOutput)
         handleSynthesisResult (synthetizer.SpeakTextAsync(config.GetResult Input))
