@@ -1,16 +1,7 @@
 module SayIt.Voices
 
 open Microsoft.FSharp.Reflection
-
-// Create discriminated unions from string - http://fssnip.net/9l
-let toString (x: 'a) =
-    match FSharpValue.GetUnionFields(x, typeof<'a>) with
-    | case, _ -> case.Name
-
-let fromString<'a> (s: string) =
-    match FSharpType.GetUnionCases typeof<'a> |> Array.filter (fun case -> case.Name = s) with
-    | [| case |] -> Some(FSharpValue.MakeUnion(case, [||]) :?> 'a)
-    | _ -> None
+open SayIt.Utils
 
 type VoiceType =
     | De
@@ -41,6 +32,7 @@ let getVoiceId (voice: VoiceType) =
 
 let listVoices() =
     let types = FSharpType.GetUnionCases typeof<VoiceType>
+    printfn "Shorthand -> Id pairs for supported voices (see https://aka.ms/speech/tts-languages):"
     for t in types do
-        let id = getVoiceId (VoiceType.FromString(t.Name).Value)
-        printfn "%s - %s" (t.Name.ToLower()) id
+        let id = getVoiceId (VoiceType.FromString(t.Name.ToLower()))
+        printfn "%s -> %s" (t.Name.ToLower()) id

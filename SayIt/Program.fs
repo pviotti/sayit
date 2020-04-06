@@ -2,6 +2,7 @@ module SayIt.Program
 
 open SayIt.Config
 open SayIt.Voices
+open SayIt.Formats
 
 open System.Threading.Tasks
 open Microsoft.CognitiveServices.Speech
@@ -27,7 +28,8 @@ let handleSynthesisResult (task: Task<SpeechSynthesisResult>) =
 let performSpeechSynthesis (config: Argu.ParseResults<Args>, speechConfig: SpeechConfig) =
     if config.Contains Output then
         let output = config.GetResult Output
-        speechConfig.SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)
+        let outputFormat = getFormatId( config.PostProcessResult (Format, FormatType.FromString))
+        speechConfig.SetSpeechSynthesisOutputFormat(outputFormat)
         use fileOutput = AudioConfig.FromWavFileOutput(output)
         use synthetizer = new SpeechSynthesizer(speechConfig, fileOutput)
         handleSynthesisResult (synthetizer.SpeakTextAsync(config.GetResult Input))
@@ -37,14 +39,14 @@ let performSpeechSynthesis (config: Argu.ParseResults<Args>, speechConfig: Speec
 
 [<EntryPoint>]
 let main argv =
-    match Config.getConfiguration (argv) with
+    match getConfiguration (argv) with
     | Config config ->
-        let key = config.GetResult Key
-        let region = config.GetResult Region
-        let voice = getVoiceId (config.GetResult Voice)
+         let key = config.GetResult Key
+         let region = config.GetResult Region
+         let voice = getVoiceId (config.PostProcessResult (Voice, VoiceType.FromString))
 
-        let speechConfig = SpeechConfig.FromSubscription(key, region)
-        speechConfig.SpeechSynthesisVoiceName <- voice
+         let speechConfig = SpeechConfig.FromSubscription(key, region)
+         speechConfig.SpeechSynthesisVoiceName <- voice
 
-        performSpeechSynthesis (config, speechConfig)
+         performSpeechSynthesis (config, speechConfig)
     | ReturnVal ret -> ret

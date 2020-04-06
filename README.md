@@ -21,9 +21,10 @@ and as CLR binary artifact.
 
 ## Usage
 
-```bash
+```
 $ ./sayit --help
-USAGE: sayit [--help] [--setup] [--version] [--listvoices] [--voice <de|en|es|fr|hi|it|ja|pt|ru|zh>] [--output <output>] <input>
+USAGE: sayit [--help] [--version] [--setup] [--list-voices] [--list-formats]
+             [--voice <voice>] [--format <format>] [--output <output>] <input>
 
 INPUT:
 
@@ -31,28 +32,34 @@ INPUT:
 
 OPTIONS:
 
-    --setup               setup the configuration file
     --version             print sayit version
-    --listvoices, -lv     list available voice shorthands, with their corresponding voice ids
-    --voice, -v <de|en|es|fr|hi|it|ja|pt|ru|zh>
-                          the voice shorthand, which maps to one of the available voice ids (see https://aka.ms/speech/tts-languages)
+    --setup               setup the configuration file
+    --list-voices, -lv    list available voice shorthands, with their
+                          corresponding voice ids
+    --list-formats, -lf   list available output format shorthands, with their
+                          corresponding output format ids
+    --voice, -v <voice>   the voice shorthand, which maps to one of the
+                          available voice ids (see `sayit -lv` for details)
+    --format, -f <format> the format shorthand of the audio output, which maps
+                          to one fo the available format ids (see `sayit -lf`
+                          for details)
     --output, -o <output> the path of the output file
     --help                display this list of options.
 ```
 At the first use you're required to run the setup wizard (`./sayit --setup`)
 and enter the configuration parameters of your Azure Cognitive Services resource,
-which are the subscription key (which you can find in the Azure portal) 
+such as the subscription key (which you can find in the Azure portal) 
 and the region identifier (see [here][region-ids]).
 SayIt will store these parameters in the configuration folder of the current
 user (e.g. `~/.config/` in Linux) as an [App Setting XML file][appsetting].
 
-Currently, SayIt supports these settings:
- - languages (*voices*): English, Italian, French, German, Spanish, Hindi, Portuguese, Russian, Japanese and Chinese (Mandarin).
+SayIt supports these settings:
+ - [languages][voices]: English, Italian, French, German, Spanish, Hindi, Portuguese, Russian, Japanese and Chinese (Mandarin).
+ - [output formats](output-formats): 
+`audio-16khz-32kbitrate-mono-mp3`, `audio-16khz-64kbitrate-mono-mp3`, `audio-16khz-128kbitrate-mono-mp3`, `audio-24khz-96kbitrate-mono-mp3`, `audio-24khz-160kbitrate-mono-mp3`, `audio-24khz-48kbitrate-mono-mp3`, `riff-8khz-16bit-mono-pcm`, `riff-16khz-16bit-mono-pcm`, `riff-24khz-16bit-mono-pcm`.
 
-    > NB: some neural voices might not be supported by your Azure Cognitive Services resource,
+> NB: some languages and output formats might not be supported by your Azure Cognitive Services resource,
 depending on its region (see [here][region-voices]).
-
- - audio export formats: MP3 16Khz 32KB/s mono
 
  [az-sub]: https://azure.microsoft.com/en-us/free/
  [az-cs]: https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/
@@ -61,3 +68,5 @@ depending on its region (see [here][region-voices]).
  [appsetting]: https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/file-schema/appsettings/
  [region-ids]: https://aka.ms/speech/sdkregion#speech-to-text-text-to-speech-and-translation
  [region-voices]: https://aka.ms/speech/sdkregion#text-to-speech
+ [voices]: https://aka.ms/speech/tts-languages
+ [output-formats]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/rest-text-to-speech#audio-outputs
