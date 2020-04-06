@@ -31,6 +31,7 @@ let getFormatId (format: FormatType) =
 
 let listFormats() =
     let types = FSharpType.GetUnionCases typeof<FormatType>
+    printfn "Shorthand -> Id pairs for supported output formats (see https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/rest-text-to-speech#audio-outputs):"
     for t in types do
-        let id = getFormatId (FormatType.FromString(t.Name).Value)
-        printfn "%s - %A" (t.Name.ToLower()) id
+        let id = getFormatId (FormatType.FromString(t.Name.ToLower()))
+        printfn "%s -> %A" (t.Name.ToLower()) id

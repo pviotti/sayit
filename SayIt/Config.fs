@@ -16,26 +16,26 @@ let CONFIG_FILE = "sayit.config"
 type Env = Environment
 
 type Args =
-    | [<NoAppSettings>] Setup
     | [<NoAppSettings>] Version
-    | [<AltCommandLine("-lv"); NoAppSettings>] ListVoices
-    | [<AltCommandLine("-lf"); NoAppSettings>] ListFormats
-    | [<AltCommandLine("-v")>] Voice of VoiceType
+    | [<NoAppSettings>] Setup    
+    | [<AltCommandLine("-lv"); NoAppSettings>] List_Voices
+    | [<AltCommandLine("-lf"); NoAppSettings>] List_Formats
+    | [<AltCommandLine("-v")>] Voice of voice: string
+    | [<AltCommandLine("-f")>] Format of format: string
     | [<AltCommandLine("-o"); NoAppSettings>] Output of output: string
-    | [<AltCommandLine("-f")>] Format of FormatType
     | [<NoCommandLine; Mandatory>] Key of key: string
     | [<NoCommandLine; Mandatory>] Region of region: string
     | [<MainCommand; Mandatory; NoAppSettings>] Input of input: string
     interface IArgParserTemplate with
         member s.Usage =
             match s with
-            | Setup _ -> "setup the configuration file"
             | Version _ -> "print sayit version"
-            | ListVoices _ -> "list available voice shorthands, with their corresponding voice ids"
-            | ListFormats _ -> "list available output formats"
-            | Voice _ -> "the voice shorthand, which maps to one of the available voice ids (see https://aka.ms/speech/tts-languages)"
+            | Setup _ -> "setup the configuration file"            
+            | List_Voices _ -> "list available voice shorthands, with their corresponding voice ids"
+            | List_Formats _ -> "list available output format shorthands, with their corresponding output format ids"
+            | Voice _ -> "the voice shorthand, which maps to one of the available voice ids (see `sayit -lv` for details)"
+            | Format _ -> "the format shorthand of the audio output, which maps to one fo the available format ids (see `sayit -lf` for details)"
             | Output _ -> "the path of the output file"
-            | Format _ -> "the format of the audio output"
             | Input _ -> "the text to be pronounced"
             | Key _ -> "the subscription key of your Azure Cognitive Services resource"
             | Region _ -> "the region identifier of your Azure Cognitive Services resource (see: https://aka.ms/speech/sdkregion)"
@@ -57,8 +57,8 @@ let writeConfig (key: string, region: string, voice: VoiceType, format: FormatTy
         parser.PrintAppSettingsArguments
             [ Key key
               Region region
-              Voice voice 
-              Format format ]
+              Voice (voice.ToString()) 
+              Format (format.ToString()) ]
     File.WriteAllText(getConfigFilePath(), xml, Text.Encoding.UTF8)
 
 let configWizard() =
@@ -71,14 +71,20 @@ let configWizard() =
     let subReg = ask "Region identifier: "
 
     let voice =
-        match VoiceType.FromString(ask "Default voice [en]: ") with
-        | Some x -> x
-        | None -> En
+        try
+            VoiceType.FromString(ask "Default voice [en]: ") 
+        with
+            | Failure _ -> 
+                Console.WriteLine "Voice defaulted to \"en\"."
+                En
 
     let format =
-        match FormatType.FromString(ask "Default output format [Mp324khz96kbps]: ") with
-        | Some x -> x
-        | None -> Mp324khz96kbps
+        try
+            FormatType.FromString(ask "Default output format [mp324khz96kbps]: ")  
+        with
+            | Failure _ -> 
+                Console.WriteLine "Output format defaulted to \"mp324khz96kbps\"."
+                Mp324khz96kbps
 
     writeConfig (subId, subReg, voice, format)
     ("The configuration has been written to " + getConfigFilePath()) |> Console.WriteLine
@@ -93,10 +99,10 @@ let getConfiguration argv =
     elif config.Contains Setup then
         configWizard()
         ReturnVal 0
-    elif config.Contains ListVoices then
+    elif config.Contains List_Voices then
         listVoices()
         ReturnVal 0
-    elif config.Contains ListFormats then
+    elif config.Contains List_Formats then
         listFormats()
         ReturnVal 0
     elif File.Exists(getConfigFilePath()) then

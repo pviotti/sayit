@@ -21,12 +21,10 @@ and as CLR binary artifact.
 
 ## Usage
 
-```bash
+```
 $ ./sayit --help
-USAGE: sayit [--help] [--setup] [--version] [--listvoices] [--listformats]
-             [--voice <de|en|es|fr|hi|it|ja|pt|ru|zh>] [--output <output>]
-             [--format <mp316khz32kbps|mp316khz64kbps|mp316khz128kbps|mp324khz48kbps|mp324khz96kbps|mp324khz160kbps|pcm8khz16b|pcm16khz16b|pcm24khz16b>]
-             <input>
+USAGE: sayit [--help] [--version] [--setup] [--list-voices] [--list-formats]
+             [--voice <voice>] [--format <format>] [--output <output>] <input>
 
 INPUT:
 
@@ -34,18 +32,18 @@ INPUT:
 
 OPTIONS:
 
-    --setup               setup the configuration file
     --version             print sayit version
-    --listvoices, -lv     list available voice shorthands, with their
+    --setup               setup the configuration file
+    --list-voices, -lv    list available voice shorthands, with their
                           corresponding voice ids
-    --listformats, -lf    list available output formats
-    --voice, -v <de|en|es|fr|hi|it|ja|pt|ru|zh>
-                          the voice shorthand, which maps to one of the
-                          available voice ids (see
-                          https://aka.ms/speech/tts-languages)
+    --list-formats, -lf   list available output format shorthands, with their
+                          corresponding output format ids
+    --voice, -v <voice>   the voice shorthand, which maps to one of the
+                          available voice ids (see `sayit -lv` for details)
+    --format, -f <format> the format shorthand of the audio output, which maps
+                          to one fo the available format ids (see `sayit -lf`
+                          for details)
     --output, -o <output> the path of the output file
-    --format, -f <mp316khz32kbps|mp316khz64kbps|mp316khz128kbps|mp324khz48kbps|mp324khz96kbps|mp324khz160kbps|pcm8khz16b|pcm16khz16b|pcm24khz16b>
-                          the format of the audio output
     --help                display this list of options.
 ```
 At the first use you're required to run the setup wizard (`./sayit --setup`)
@@ -56,7 +54,7 @@ SayIt will store these parameters in the configuration folder of the current
 user (e.g. `~/.config/` in Linux) as an [App Setting XML file][appsetting].
 
 SayIt supports these settings:
- - languages: English, Italian, French, German, Spanish, Hindi, Portuguese, Russian, Japanese and Chinese (Mandarin).
+ - [languages][voices]: English, Italian, French, German, Spanish, Hindi, Portuguese, Russian, Japanese and Chinese (Mandarin).
  - [output formats](output-formats): 
 `audio-16khz-32kbitrate-mono-mp3`, `audio-16khz-64kbitrate-mono-mp3`, `audio-16khz-128kbitrate-mono-mp3`, `audio-24khz-96kbitrate-mono-mp3`, `audio-24khz-160kbitrate-mono-mp3`, `audio-24khz-48kbitrate-mono-mp3`, `riff-8khz-16bit-mono-pcm`, `riff-16khz-16bit-mono-pcm`, `riff-24khz-16bit-mono-pcm`.
 
@@ -70,4 +68,5 @@ depending on its region (see [here][region-voices]).
  [appsetting]: https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/file-schema/appsettings/
  [region-ids]: https://aka.ms/speech/sdkregion#speech-to-text-text-to-speech-and-translation
  [region-voices]: https://aka.ms/speech/sdkregion#text-to-speech
+ [voices]: https://aka.ms/speech/tts-languages
  [output-formats]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/rest-text-to-speech#audio-outputs
