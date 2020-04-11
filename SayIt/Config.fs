@@ -50,7 +50,7 @@ let getConfigFilePath() =
     Env.GetFolderPath(Env.SpecialFolder.ApplicationData, Env.SpecialFolderOption.Create)
     + string Path.DirectorySeparatorChar + CONFIG_FILE
 
-let writeConfig (key: string, region: string, voice: VoiceType, format: FormatType) =
+let writeConfig (key: string, region: string, voice: VoiceType, format: FormatType, configFilePath: string) =
     let parser = ArgumentParser.Create<Args>()
 
     let xml =
@@ -59,9 +59,9 @@ let writeConfig (key: string, region: string, voice: VoiceType, format: FormatTy
               Region region
               Voice (voice.ToString()) 
               Format (format.ToString()) ]
-    File.WriteAllText(getConfigFilePath(), xml, Text.Encoding.UTF8)
+    File.WriteAllText(configFilePath, xml, Text.Encoding.UTF8)
 
-let configWizard() =
+let configWizard(configFilePath) =
     Console.WriteLine "Please provide the following default configurations:"
     let ask (prompt: string) =
         Console.Write prompt
@@ -86,8 +86,8 @@ let configWizard() =
                 Console.WriteLine "Output format defaulted to \"mp324khz96kbps\"."
                 Mp324khz96kbps
 
-    writeConfig (subId, subReg, voice, format)
-    ("The configuration has been written to " + getConfigFilePath()) |> Console.WriteLine
+    writeConfig (subId, subReg, voice, format, configFilePath)
+    ("The configuration has been written to " + configFilePath) |> Console.WriteLine
 
 let getConfiguration argv =
     let parser = ArgumentParser.Create<Args>(programName = PROGRAM_NAME, errorHandler = ProcessExiter())
@@ -97,7 +97,7 @@ let getConfiguration argv =
         printVersion()
         ReturnVal 0
     elif config.Contains Setup then
-        configWizard()
+        configWizard(getConfigFilePath())
         ReturnVal 0
     elif config.Contains List_Voices then
         listVoices()
