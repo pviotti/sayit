@@ -30,7 +30,6 @@ module ``SayIt tests`` =
                 let voiceId = getVoiceId (shorthand)
                 voiceId |> should startWith shorthandStr
 
-
         [<Fact>]
         member __.``format shorthand should match the right format id``() =
             for t in (FSharpType.GetUnionCases typeof<FormatType>) do
