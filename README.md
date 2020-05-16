@@ -2,7 +2,7 @@
 
 [![.NET Core CI](https://github.com/pviotti/sayit/workflows/.NET%20Core%20CI/badge.svg)](https://github.com/pviotti/sayit/actions?query=workflow%3A%22.NET+Core+CI%22)
 
-SayIt is a simple command line tool that pronounces written text.
+SayIt is a cross-platform command line tool that pronounces written text.
 You can use it to create audio recordings of your text files or
 to improve your pronunciation in a foreign language.
 
@@ -17,32 +17,30 @@ hours per month, which is often enough for personal use.
 You can download SayIt in the [release section][release].
 SayIt is currently distributed both as self-contained .NET Core executable
 (which means you won't need to install the .NET Core runtime to use it)
-and as CLR binary artifact.
+and as framework-dependent .NET executable.
 
 ## Usage
 
 ```
 $ ./sayit --help
 USAGE: sayit [--help] [--version] [--setup] [--list-voices] [--list-formats]
-             [--voice <voice>] [--format <format>] [--output <output>] <input>
+             [--voice <voice>] [--format <format>] [--output <output>] [<input>]
 
 INPUT:
 
     <input>               the text to be pronounced
+                          (if missing, sayit will try to read it from stdin)
 
 OPTIONS:
 
     --version             print sayit version
     --setup               setup the configuration file
-    --list-voices, -lv    list available voice shorthands, with their
-                          corresponding voice ids
-    --list-formats, -lf   list available output format shorthands, with their
-                          corresponding output format ids
-    --voice, -v <voice>   the voice shorthand, which maps to one of the
-                          available voice ids (see `sayit -lv` for details)
-    --format, -f <format> the format shorthand of the audio output, which maps
-                          to one fo the available format ids (see `sayit -lf`
-                          for details)
+    --list-voices, -lv    list the available voice shorthands 
+                          with their corresponding voice ids
+    --list-formats, -lf   list the available output format shorthands 
+                          with their corresponding output format ids
+    --voice, -v <voice>   the voice shorthand
+    --format, -f <format> the audio output format shorthand
     --output, -o <output> the path of the output file
     --help                display this list of options.
 ```
