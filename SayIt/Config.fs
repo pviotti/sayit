@@ -17,7 +17,7 @@ type Env = Environment
 
 type Args =
     | [<NoAppSettings>] Version
-    | [<NoAppSettings>] Setup    
+    | [<NoAppSettings>] Setup
     | [<AltCommandLine("-lv"); NoAppSettings>] List_Voices
     | [<AltCommandLine("-lf"); NoAppSettings>] List_Formats
     | [<AltCommandLine("-v")>] Voice of voice: string
@@ -58,11 +58,11 @@ let writeConfig (key: string, region: string, voice: VoiceType, format: FormatTy
         parser.PrintAppSettingsArguments
             [ Key key
               Region region
-              Voice (voice.ToString()) 
-              Format (format.ToString()) ]
+              Voice(voice.ToString())
+              Format(format.ToString()) ]
     File.WriteAllText(configFilePath, xml, Text.Encoding.UTF8)
 
-let configWizard(configFilePath) =
+let configWizard (configFilePath) =
     Console.WriteLine "Please provide the following default configurations:"
     let ask (prompt: string) =
         Console.Write prompt
@@ -73,32 +73,31 @@ let configWizard(configFilePath) =
 
     let voice =
         try
-            VoiceType.FromString(ask "Default voice [en]: ") 
-        with
-            | Failure _ -> 
-                Console.WriteLine "Voice defaulted to \"en\"."
-                En
+            VoiceType.FromString(ask "Default voice [en]: ")
+        with Failure _ ->
+            Console.WriteLine "Voice defaulted to \"en\"."
+            En
 
     let format =
         try
-            FormatType.FromString(ask "Default output format [mp324khz96kbps]: ")  
-        with
-            | Failure _ -> 
-                Console.WriteLine "Output format defaulted to \"mp324khz96kbps\"."
-                Mp324khz96kbps
+            FormatType.FromString(ask "Default output format [mp324khz96kbps]: ")
+        with Failure _ ->
+            Console.WriteLine "Output format defaulted to \"mp324khz96kbps\"."
+            Mp324khz96kbps
 
     writeConfig (subId, subReg, voice, format, configFilePath)
     ("The configuration has been written to " + configFilePath) |> Console.WriteLine
 
 let getConfiguration argv =
-    let parser = ArgumentParser.Create<Args>(programName = PROGRAM_NAME, errorHandler = ProcessExiter())
-    let config = parser.Parse(argv, ignoreMissing=true)
+    let parser =
+        ArgumentParser.Create<Args>(programName = PROGRAM_NAME, errorHandler = ProcessExiter(), checkStructure = false)
+    let config = parser.ParseCommandLine(argv, ignoreMissing = true)
 
     if config.Contains Version then
         printVersion()
         ReturnVal 0
     elif config.Contains Setup then
-        configWizard(getConfigFilePath())
+        configWizard (getConfigFilePath())
         ReturnVal 0
     elif config.Contains List_Voices then
         listVoices()
@@ -108,6 +107,6 @@ let getConfiguration argv =
         ReturnVal 0
     elif File.Exists(getConfigFilePath()) then
         let confReader = ConfigurationReader.FromAppSettingsFile(getConfigFilePath())
-        Config (parser.Parse(argv, confReader, ignoreMissing = true))
+        Config(parser.Parse(argv, confReader, ignoreMissing = true))
     else
         Config config
