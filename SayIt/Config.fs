@@ -25,7 +25,7 @@ type Args =
     | [<AltCommandLine("-o"); NoAppSettings>] Output of output: string
     | [<NoCommandLine; Mandatory>] Key of key: string
     | [<NoCommandLine; Mandatory>] Region of region: string
-    | [<MainCommand; Mandatory; NoAppSettings>] Input of input: string
+    | [<MainCommand; NoAppSettings>] Input of input: string
     interface IArgParserTemplate with
         member s.Usage =
             match s with
