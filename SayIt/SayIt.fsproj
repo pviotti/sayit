@@ -13,6 +13,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Argu" Version="6.0.0" />
-    <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.11.0" />
+    <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.13.0" />
   </ItemGroup>
 </Project>
