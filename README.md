@@ -1,6 +1,6 @@
 # SayIt :loudspeaker:
 
-[![.NET Core CI](https://github.com/pviotti/sayit/workflows/.NET%20Core%20CI/badge.svg)](https://github.com/pviotti/sayit/actions?query=workflow%3A%22.NET+Core+CI%22)
+[![.NET CI](https://github.com/pviotti/sayit/workflows/.NET%20CI/badge.svg)](https://github.com/pviotti/sayit/actions?query=workflow%3A%22.NET+CI%22)
 
 SayIt is a cross-platform command line tool that pronounces written text.
 You can use it to create audio recordings of your text files or
@@ -15,9 +15,9 @@ Azure Cognitive Services [free tier][az-cs-price] includes 5 text-to-speech
 hours per month, which is often enough for personal use.
 
 You can download SayIt in the [release section][release].
-SayIt is currently distributed both as self-contained .NET Core executable
+SayIt is currently distributed both as self-contained .NET executable
 (which means you won't need to install the .NET Core runtime to use it)
-and as framework-dependent .NET executable.
+and as framework-dependent .NET 5 executable.
 
 ## Usage
 
@@ -35,9 +35,9 @@ OPTIONS:
 
     --version             print sayit version
     --setup               setup the configuration file
-    --list-voices, -lv    list the available voice shorthands 
+    --list-voices, -lv    list the available voice shorthands
                           with their corresponding voice ids
-    --list-formats, -lf   list the available output format shorthands 
+    --list-formats, -lf   list the available output format shorthands
                           with their corresponding output format ids
     --voice, -v <voice>   the voice shorthand
     --format, -f <format> the audio output format shorthand
@@ -46,14 +46,14 @@ OPTIONS:
 ```
 At the first use you're required to run the setup wizard (`./sayit --setup`)
 and enter the configuration parameters of your Azure Cognitive Services resource,
-such as the subscription key (which you can find in the Azure portal) 
+such as the subscription key (which you can find in the Azure portal)
 and the region identifier (see [here][region-ids]).
 SayIt will store these parameters in the configuration folder of the current
 user (e.g. `~/.config/` in Linux) as an [App Setting XML file][appsetting].
 
 SayIt supports these settings:
  - [languages][voices]: English, Italian, French, German, Spanish, Hindi, Portuguese, Russian, Japanese and Chinese (Mandarin).
- - [output formats][output-formats]: 
+ - [output formats][output-formats]:
 `audio-16khz-32kbitrate-mono-mp3`, `audio-16khz-64kbitrate-mono-mp3`, `audio-16khz-128kbitrate-mono-mp3`, `audio-24khz-96kbitrate-mono-mp3`, `audio-24khz-160kbitrate-mono-mp3`, `audio-24khz-48kbitrate-mono-mp3`, `riff-8khz-16bit-mono-pcm`, `riff-16khz-16bit-mono-pcm`, `riff-24khz-16bit-mono-pcm`.
 
 > NB: some languages and output formats might not be supported by your Azure Cognitive Services resource,
