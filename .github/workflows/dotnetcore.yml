@@ -46,6 +46,7 @@ jobs:
       run: |
         export SHA=${GITHUB_SHA:0:7}
         dotnet publish -c Debug -o ./sayit-dev-$SHA
+        echo SHA=${GITHUB_SHA:0:7} >> $GITHUB_ENV
 
     - name: Upload debug artifact
       uses: actions/upload-artifact@v1.0.0
