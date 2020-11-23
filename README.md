@@ -16,7 +16,7 @@ hours per month, which is often enough for personal use.
 
 You can download SayIt in the [release section][release].
 SayIt is currently distributed both as self-contained .NET executable
-(which means you won't need to install the .NET Core runtime to use it)
+(which means you won't need to install the .NET runtime to use it)
 and as framework-dependent .NET 5 executable.
 
 ## Usage
