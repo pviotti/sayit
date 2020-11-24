@@ -35,4 +35,4 @@ let listVoices() =
     printfn "Shorthand -> Id pairs for supported voices (see https://aka.ms/speech/tts-languages):"
     for t in types do
         let id = getVoiceId (VoiceType.FromString(t.Name.ToLower()))
-        printfn "%s -> %s" (t.Name.ToLower()) id
+        printfn " %s -> %s" (t.Name.ToLower()) id
