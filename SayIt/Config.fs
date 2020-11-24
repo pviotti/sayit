@@ -29,14 +29,14 @@ type Args =
     interface IArgParserTemplate with
         member s.Usage =
             match s with
-            | Version _ -> "print sayit version"
+            | Version _ -> $"print {PROGRAM_NAME} version"
             | Setup _ -> "setup the configuration file"
             | List_Voices _ -> "list the available voice shorthands with their corresponding voice ids"
             | List_Formats _ -> "list the available output format shorthands with their corresponding output format ids"
             | Voice _ -> "the voice shorthand"
             | Format _ -> "the audio output format shorthand"
             | Output _ -> "the path of the output file"
-            | Input _ -> "the text to be pronounced (if missing, " + PROGRAM_NAME + " will try to read it from stdin)"
+            | Input _ -> $"the text to be pronounced (if missing, {PROGRAM_NAME} will try to read it from stdin)"
             | Key _ -> "the subscription key of your Azure Cognitive Services resource"
             | Region _ ->
                 "the region identifier of your Azure Cognitive Services resource (see: https://aka.ms/speech/sdkregion)"
@@ -45,7 +45,7 @@ type ConfigOrInt =
     | Config of Argu.ParseResults<Args>
     | ReturnVal of int
 
-let printVersion() = printfn "sayit version %s" VERSION
+let printVersion() = printfn $"{PROGRAM_NAME} version {VERSION}"
 
 let getConfigFilePath() =
     Env.GetFolderPath(Env.SpecialFolder.ApplicationData, Env.SpecialFolderOption.Create)
@@ -63,9 +63,9 @@ let writeConfig (key: string, region: string, voice: VoiceType, format: FormatTy
     File.WriteAllText(configFilePath, xml, Text.Encoding.UTF8)
 
 let configWizard (configFilePath) =
-    Console.WriteLine "Please provide the following default configurations:"
+    printfn "Please provide the following default configurations:"
     let ask (prompt: string) =
-        Console.Write prompt
+        printf "%s" prompt
         Console.ReadLine()
 
     let subId = ask "Subscription key: "
@@ -75,18 +75,18 @@ let configWizard (configFilePath) =
         try
             VoiceType.FromString(ask "Default voice [en]: ")
         with Failure _ ->
-            Console.WriteLine "Voice defaulted to \"en\"."
+            printfn "Voice defaulted to \"en\"."
             En
 
     let format =
         try
             FormatType.FromString(ask "Default output format [mp324khz96kbps]: ")
         with Failure _ ->
-            Console.WriteLine "Output format defaulted to \"mp324khz96kbps\"."
+            printfn "Output format defaulted to \"mp324khz96kbps\"."
             Mp324khz96kbps
 
     writeConfig (subId, subReg, voice, format, configFilePath)
-    ("The configuration has been written to " + configFilePath) |> Console.WriteLine
+    printfn $"The configuration has been written to {configFilePath}"
 
 let getConfiguration argv =
     let parser =
