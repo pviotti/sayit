@@ -34,4 +34,4 @@ let listFormats() =
     printfn "Shorthand -> Id pairs for supported output formats (see https://bit.ly/2UOjVpg):"
     for t in types do
         let id = getFormatId (FormatType.FromString(t.Name.ToLower()))
-        printfn "%s -> %A" (t.Name.ToLower()) id
+        printfn " %15s -> %A" (t.Name.ToLower()) id
