@@ -5,6 +5,7 @@ coverage.json
 
 .ionide
 .vscode
+.idea
 
 ### fsharp ###
 lib/debug
