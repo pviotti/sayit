@@ -53,11 +53,13 @@ user (e.g. `~/.config/` in Linux) as an [App Setting XML file][appsetting].
 
 SayIt supports these settings:
  - [languages][voices]: English, Italian, French, German, Spanish, Hindi, Portuguese, Russian, Japanese and Chinese (Mandarin).
- - [output formats][output-formats]:
-`audio-16khz-32kbitrate-mono-mp3`, `audio-16khz-64kbitrate-mono-mp3`, `audio-16khz-128kbitrate-mono-mp3`, `audio-24khz-96kbitrate-mono-mp3`, `audio-24khz-160kbitrate-mono-mp3`, `audio-24khz-48kbitrate-mono-mp3`, `riff-8khz-16bit-mono-pcm`, `riff-16khz-16bit-mono-pcm`, `riff-24khz-16bit-mono-pcm`.
+ - [output formats][output-formats]: `audio-16khz-32kbitrate-mono-mp3`, `audio-16khz-64kbitrate-mono-mp3`, `audio-16khz-128kbitrate-mono-mp3`, `audio-24khz-96kbitrate-mono-mp3`, `audio-24khz-160kbitrate-mono-mp3`, `audio-24khz-48kbitrate-mono-mp3`, `riff-8khz-16bit-mono-pcm`, `riff-16khz-16bit-mono-pcm`, `riff-24khz-16bit-mono-pcm`.
 
 > NB: some languages and output formats might not be supported by your Azure Cognitive Services resource,
 depending on its region (see [here][region-voices]).
+
+> NB: the choice of supported voices and formats has been somewhat random. I
+> welcome suggestions and contributions, of course.
 
  [az-sub]: https://azure.microsoft.com/en-us/free/
  [az-cs]: https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/
