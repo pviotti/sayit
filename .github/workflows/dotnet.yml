@@ -63,9 +63,9 @@ jobs:
         dotnet publish -c Release -r win-x64 --self-contained false -o ./sayit-$VERSION-win
         dotnet publish -c Release -r linux-x64 --self-contained false -o ./sayit-$VERSION-linux
         dotnet publish -c Release -r osx-x64 --self-contained false -o ./sayit-$VERSION-osx
-        dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ./sayit-$VERSION-win-sc
+        dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true -o ./sayit-$VERSION-win-sc
         dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ./sayit-$VERSION-linux-sc
-        dotnet publish -c Release -r osx-x64 -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ./sayit-$VERSION-osx-sc
+        dotnet publish -c Release -r osx-x64 -p:PublishSingleFile=true -o ./sayit-$VERSION-osx-sc
 
         zip -r sayit-$VERSION-win.zip sayit-$VERSION-win
         zip -r sayit-$VERSION-linux.zip sayit-$VERSION-linux
