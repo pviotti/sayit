@@ -21,13 +21,13 @@ let getVoiceId (voice: VoiceType) =
     match voice with
     | De -> "de-DE-KatjaNeural"
     | En -> "en-US-GuyNeural"
-    | Es -> "es-ES-Laura-Apollo"
-    | Fr -> "fr-FR-Julie-Apollo"
-    | Hi -> "hi-IN-Kalpana-Apollo"
+    | Es -> "es-ES-ElviraNeural"
+    | Fr -> "fr-FR-DeniseNeural"
+    | Hi -> "hi-IN-SwaraNeural"
     | It -> "it-IT-ElsaNeural"
-    | Ja -> "ja-JP-Ayumi-Apollo"
+    | Ja -> "ja-JP-NanamiNeural"
     | Pt -> "pt-BR-FranciscaNeural"
-    | Ru -> "ru-RU-Irina-Apollo"
+    | Ru -> "ru-RU-DariyaNeural"
     | Zh -> "zh-CN-XiaoxiaoNeural"
 
 let listVoices() =
