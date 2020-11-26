@@ -25,11 +25,11 @@ jobs:
       with:
         dotnet-version: '5.0.100'
 
+    - name: Set SHA variable
+      run: echo "SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
     - name: Build and test
-      run: |
-        export SHA=${GITHUB_SHA:0:7}
-        dotnet test -p:CollectCoverage=true -c Debug -o ./sayit-dev-$SHA
-        echo SHA=${GITHUB_SHA:0:7} >> $GITHUB_ENV
+      run: dotnet test -p:CollectCoverage=true -c Debug -o sayit-dev-${{ env.SHA }}
 
     - name: Upload debug artifact
       uses: actions/upload-artifact@v1.0.0
