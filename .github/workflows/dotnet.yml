@@ -63,7 +63,7 @@ jobs:
         VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
 
         dotnet publish -c Release -o ./sayit-$VERSION-${{ matrix.config.id }}
-        dotnet publish -c Release -r {{ matrix.config.rid }} -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ./sayit-$VERSION-${{ matrix.config.id }}-sc
+        dotnet publish -c Release -r ${{ matrix.config.rid }} -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ./sayit-$VERSION-${{ matrix.config.id }}-sc
 
         zip -r sayit-$VERSION-${{ matrix.config.id }}.zip sayit-$VERSION-${{ matrix.config.id }}
         zip -r sayit-$VERSION-${{ matrix.config.id }}-sc.zip sayit-$VERSION-${{ matrix.config.id }}-sc
