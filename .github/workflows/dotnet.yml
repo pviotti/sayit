@@ -25,17 +25,14 @@ jobs:
       with:
         dotnet-version: '5.0.100'
 
-    - name: Set SHA variable
-      run: echo "SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
     - name: Build and test
-      run: dotnet test -p:CollectCoverage=true -c Debug -o sayit-dev-${{ env.SHA }}
+      run: dotnet test -p:CollectCoverage=true -c Debug -o sayit-${{ matrix.os }}-${{ github.sha }}
 
     - name: Upload debug artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: sayit-dev-${{ env.SHA }}
-        path: sayit-dev-${{ env.SHA }}
+        name: sayit-${{ matrix.os }}-${{ github.sha }}
+        path: sayit-${{ matrix.os }}-${{ github.sha }}
 
   publish:
     needs: test
@@ -59,19 +56,19 @@ jobs:
 
     - name: Set version variable
       if: matrix.config.id != 'win'
-      run: echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      run: echo "VER=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
     - name: Set version variable
       if: matrix.config.id == 'win'
-      run: echo "VERSION=$(($env:GITHUB_REF -split '/')[-1] -replace ' ','')" >> $GITHUB_ENV
+      run: echo "VER=$(($env:GITHUB_REF -split '/')[-1] -replace ' ','')" >> $GITHUB_ENV
 
     - name: Build release artifacts
       run: |
-        dotnet publish -c Release -o sayit-${{ env.VERSION }}-${{ matrix.config.id }}
-        dotnet publish -c Release -r ${{ matrix.config.rid }} -p:PublishSingleFile=true -p:PublishReadyToRun=true -o sayit-${{ env.VERSION }}-${{ matrix.config.id }}-sc
+        dotnet publish -c Release -o sayit-${{ env.VER }}-${{ matrix.config.id }}
+        dotnet publish -c Release -r ${{ matrix.config.rid }} -p:PublishSingleFile=true -p:PublishReadyToRun=true -o sayit-${{ env.VER }}-${{ matrix.config.id }}-sc
 
-        zip -r sayit-${{ env.VERSION }}-${{ matrix.config.id }}.zip sayit-${{ env.VERSION }}-${{ matrix.config.id }}
-        zip -r sayit-${{ env.VERSION }}-${{ matrix.config.id }}-sc.zip sayit-${{ env.VERSION }}-${{ matrix.config.id }}-sc
+        zip -r sayit-${{ env.VER }}-${{ matrix.config.id }}.zip sayit-${{ env.VER }}-${{ matrix.config.id }}
+        zip -r sayit-${{ env.VER }}-${{ matrix.config.id }}-sc.zip sayit-${{ env.VER }}-${{ matrix.config.id }}-sc
 
     - name: Create draft release
       uses: softprops/action-gh-release@v1
