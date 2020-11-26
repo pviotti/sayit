@@ -58,11 +58,11 @@ jobs:
         dotnet-version: '5.0.100'
 
     - name: Set version variable (on Linux and MacOS)
-      if: !contains(matrix.os, 'windows')
+      if: !startsWith(matrix.id, 'win')
       run: echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
     - name: Set version variable (on Windows)
-      if: contains(matrix.os, 'windows')
+      if: startsWith(matrix.id, 'win')
       run: echo "VERSION=$(($env:GITHUB_REF -split '/')[-1] -replace ' ','')" >> $GITHUB_ENV
 
     - name: Build release artifacts
