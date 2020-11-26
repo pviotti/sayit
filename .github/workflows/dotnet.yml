@@ -13,26 +13,9 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-
+        os: [ubuntu-latest, windows-latest, macos-latest]
     name: Build and test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '5.0.100'
-
-    - name: Test
-      run: dotnet test -p:CollectCoverage=true
-
-
-  publish:
-    needs: test
-    name: Publish artifacts
-    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -42,40 +25,61 @@ jobs:
       with:
         dotnet-version: '5.0.100'
 
-    - name: Publish debug artifact
-      run: |
-        export SHA=${GITHUB_SHA:0:7}
-        dotnet publish -c Debug -o ./sayit-dev-$SHA
-        echo SHA=${GITHUB_SHA:0:7} >> $GITHUB_ENV
+    - name: Build and test
+      run: dotnet test -p:CollectCoverage=true -c Debug -o sayit-${{ matrix.os }}-${{ github.sha }}
 
     - name: Upload debug artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: sayit-dev-${{ env.SHA }}
-        path: sayit-dev-${{ env.SHA }}
+        name: sayit-${{ matrix.os }}-${{ github.sha }}
+        path: sayit-${{ matrix.os }}-${{ github.sha }}
 
-    - name: Publish release artifacts
-      if: startsWith(github.ref, 'refs/tags/v')
+  publish:
+    needs: test
+    strategy:
+      matrix:
+        config:
+            - {os: ubuntu-latest, rid: "linux-x64", id: "linux" }
+            - {os: windows-latest, rid: "win-x64", id: "win" }
+            - {os: macos-latest, rid: "osx-x64", id: "osx" }
+    name: Create draft release on ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.os }}
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.100'
+
+    - name: Set version variable (Linux and MacOS)
+      if: matrix.config.id != 'win'
+      run: echo "VER=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+    - name: Set version variable (Windows)
+      if: matrix.config.id == 'win'
+      run: echo "VER=$(($env:GITHUB_REF -split '/')[-1] -replace ' ','')" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+
+    - name: Build release artifacts
       run: |
-        # Strip git ref prefix from version
-        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+        dotnet publish -c Release -o sayit-${{ env.VER }}-${{ matrix.config.id }}
+        dotnet publish -c Release -r ${{ matrix.config.rid }} -p:PublishSingleFile=true -p:PublishReadyToRun=true -o sayit-${{ env.VER }}-${{ matrix.config.id }}-sc
 
-        dotnet publish -c Release -r win-x64 --self-contained false -o ./sayit-$VERSION-win
-        dotnet publish -c Release -r linux-x64 --self-contained false -o ./sayit-$VERSION-linux
-        dotnet publish -c Release -r osx-x64 --self-contained false -o ./sayit-$VERSION-osx
-        dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ./sayit-$VERSION-win-sc
-        dotnet publish -c Release -r linux-x64 -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ./sayit-$VERSION-linux-sc
-        dotnet publish -c Release -r osx-x64 -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ./sayit-$VERSION-osx-sc
-
-        zip -r sayit-$VERSION-win.zip sayit-$VERSION-win
-        zip -r sayit-$VERSION-linux.zip sayit-$VERSION-linux
-        zip -r sayit-$VERSION-osx.zip sayit-$VERSION-osx
-        zip -r sayit-$VERSION-win-sc.zip sayit-$VERSION-win-sc
-        zip -r sayit-$VERSION-linux-sc.zip sayit-$VERSION-linux-sc
-        zip -r sayit-$VERSION-osx-sc.zip sayit-$VERSION-osx-sc
+    - name: Zip artifacts (Linux and MacOS)
+      if: matrix.config.id != 'win'
+      run: |
+        zip -r sayit-${{ env.VER }}-${{ matrix.config.id }}.zip sayit-${{ env.VER }}-${{ matrix.config.id }}
+        zip -r sayit-${{ env.VER }}-${{ matrix.config.id }}-sc.zip sayit-${{ env.VER }}-${{ matrix.config.id }}-sc
+        
+    - name: Zip artifacts (Windows)
+      if: matrix.config.id == 'win'
+      run: |
+        Compress-Archive -Path sayit-${{ env.VER }}-${{ matrix.config.id }} -DestinationPath sayit-${{ env.VER }}-${{ matrix.config.id }}.zip
+        Compress-Archive -Path sayit-${{ env.VER }}-${{ matrix.config.id }}-sc -DestinationPath sayit-${{ env.VER }}-${{ matrix.config.id }}-sc.zip
 
     - name: Create draft release
-      if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v1
       with:
         draft: true
