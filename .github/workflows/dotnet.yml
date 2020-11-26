@@ -57,16 +57,21 @@ jobs:
       with:
         dotnet-version: '5.0.100'
 
+    - name: Set version variable (on Linux and MacOS)
+      if: !contains(matrix.os, 'windows')
+      run: echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+    - name: Set version variable (on Windows)
+      if: contains(matrix.os, 'windows')
+      run: echo "VERSION=$(($env:GITHUB_REF -split '/')[-1] -replace ' ','')" >> $GITHUB_ENV
+
     - name: Build release artifacts
       run: |
-        # Strip git ref prefix from version
-        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+        dotnet publish -c Release -o ./sayit-${{ env.VERSION }}-${{ matrix.config.id }}
+        dotnet publish -c Release -r ${{ matrix.config.rid }} -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ./sayit-${{ env.VERSION }}-${{ matrix.config.id }}-sc
 
-        dotnet publish -c Release -o ./sayit-$VERSION-${{ matrix.config.id }}
-        dotnet publish -c Release -r ${{ matrix.config.rid }} -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ./sayit-$VERSION-${{ matrix.config.id }}-sc
-
-        zip -r sayit-$VERSION-${{ matrix.config.id }}.zip sayit-$VERSION-${{ matrix.config.id }}
-        zip -r sayit-$VERSION-${{ matrix.config.id }}-sc.zip sayit-$VERSION-${{ matrix.config.id }}-sc
+        zip -r sayit-$VERSION-${{ matrix.config.id }}.zip sayit-${{ env.VERSION }}-${{ matrix.config.id }}
+        zip -r sayit-$VERSION-${{ matrix.config.id }}-sc.zip sayit-${{ env.VERSION }}-${{ matrix.config.id }}-sc
 
     - name: Create draft release
       uses: softprops/action-gh-release@v1
