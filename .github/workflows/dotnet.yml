@@ -44,7 +44,7 @@ jobs:
             - {os: macos-latest, rid: "osx-x64", id: "osx" }
     name: Create draft release on ${{ matrix.config.os }}
     runs-on: ${{ matrix.config.os }}
-    #if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
     - uses: actions/checkout@v2
@@ -60,7 +60,9 @@ jobs:
 
     - name: Set version variable (Windows)
       if: matrix.config.id == 'win'
-      run: echo "::set-env name=VER::$(($env:GITHUB_REF -split '/')[-1] -replace ' ','')"
+      #run: echo "::set-env name=VER::$(($env:GITHUB_REF -split '/')[-1] -replace ' ','')"
+      #run: echo "mypath" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      run: echo "VER=$(($env:GITHUB_REF -split '/')[-1] -replace ' ','')" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
       #run: echo "VER=$(($env:GITHUB_REF -split '/')[-1] -replace ' ','')" >> $GITHUB_ENV
 
     - name: Build release artifacts
