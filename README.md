@@ -1,6 +1,7 @@
 # SayIt :loudspeaker:
 
 [![.NET CI](https://github.com/pviotti/sayit/workflows/.NET%20CI/badge.svg)](https://github.com/pviotti/sayit/actions?query=workflow%3A%22.NET+CI%22)
+[![sayit](https://img.shields.io/aur/version/sayit?color=1793d1&label=sayit&logo=arch-linux)](https://aur.archlinux.org/packages/sayit/)
 
 SayIt is a cross-platform command line tool that pronounces written text.
 You can use it to create audio recordings of your text files or
