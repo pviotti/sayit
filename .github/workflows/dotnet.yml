@@ -65,7 +65,7 @@ jobs:
     - name: Build release artifacts
       run: |
         dotnet publish -c Release -o sayit-${{ env.VER }}-${{ matrix.config.id }}
-        dotnet publish -c Release -r ${{ matrix.config.rid }} -p:PublishSingleFile=true -p:PublishReadyToRun=true -o sayit-${{ env.VER }}-${{ matrix.config.id }}-sc
+        dotnet publish -c Release -r ${{ matrix.config.rid }} --self-contained -p:PublishSingleFile=true -p:PublishReadyToRun=true -o sayit-${{ env.VER }}-${{ matrix.config.id }}-sc
 
     - name: Zip artifacts (Linux and MacOS)
       if: matrix.config.id != 'win'
