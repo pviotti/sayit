@@ -23,7 +23,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.100'
+        dotnet-version: '6.x'
 
     - name: Build and test
       run: dotnet test -p:CollectCoverage=true -c Debug -o sayit-${{ matrix.os }}-${{ github.sha }}
@@ -52,7 +52,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.100'
+        dotnet-version: '6.x'
 
     - name: Set version variable (Linux and MacOS)
       if: matrix.config.id != 'win'
@@ -72,7 +72,7 @@ jobs:
       run: |
         zip -r sayit-${{ env.VER }}-${{ matrix.config.id }}.zip sayit-${{ env.VER }}-${{ matrix.config.id }}
         zip -r sayit-${{ env.VER }}-${{ matrix.config.id }}-sc.zip sayit-${{ env.VER }}-${{ matrix.config.id }}-sc
-        
+
     - name: Zip artifacts (Windows)
       if: matrix.config.id == 'win'
       run: |
