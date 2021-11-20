@@ -38,9 +38,9 @@ module ``SayIt tests`` =
                 let id = getFormatId shorthand
                 let idStr = id.ToString().ToLower()
                 let idLen = String.length idStr
-                let featuresSh = Regex.Replace((shorthandStr.[0..2]), @"[a-zA-Z]", String.Empty)
-                let featuresId = Regex.Replace((idStr.[(idLen - 3)..(idLen - 1)]), @"[a-zA-Z]", String.Empty)
-                shorthandStr.[0..2] |> should startWith (idStr.[(idLen - 3)..(idLen - 1)])
+                let featuresSh = Regex.Replace((shorthandStr[0..2]), @"[a-zA-Z]", String.Empty)
+                let featuresId = Regex.Replace((idStr[(idLen - 3)..(idLen - 1)]), @"[a-zA-Z]", String.Empty)
+                shorthandStr[0..2] |> should startWith (idStr[(idLen - 3)..(idLen - 1)])
                 featuresSh |> should equal featuresId
 
 
