@@ -1,3 +1,0 @@
-[submodule "pkg-arch"]
-	path = pkg-arch
-	url = https://aur.archlinux.org/sayit.git
