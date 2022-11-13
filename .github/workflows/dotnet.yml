@@ -23,7 +23,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.x'
+        dotnet-version: '7.x'
 
     - name: Build and test
       run: dotnet test -p:CollectCoverage=true -c Debug -o sayit-${{ matrix.os }}-${{ github.sha }}
@@ -52,7 +52,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.x'
+        dotnet-version: '7.x'
 
     - name: Set version variable (Linux and MacOS)
       if: matrix.config.id != 'win'
