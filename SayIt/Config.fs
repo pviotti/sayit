@@ -29,10 +29,10 @@ type Args =
     interface IArgParserTemplate with
         member s.Usage =
             match s with
-            | Version _ -> $"print {PROGRAM_NAME} version"
-            | Setup _ -> "setup the configuration file"
-            | List_Voices _ -> "list the available voice shorthands with their corresponding voice ids"
-            | List_Formats _ -> "list the available output format shorthands with their corresponding output format ids"
+            | Version -> $"print {PROGRAM_NAME} version"
+            | Setup -> "setup the configuration file"
+            | List_Voices -> "list the available voice shorthands with their corresponding voice ids"
+            | List_Formats -> "list the available output format shorthands with their corresponding output format ids"
             | Voice _ -> "the voice shorthand"
             | Format _ -> "the audio output format shorthand"
             | Output _ -> "the path of the output file"
