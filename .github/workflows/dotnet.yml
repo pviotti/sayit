@@ -18,18 +18,18 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.x'
+        dotnet-version: '9.x'
 
     - name: Build and test
       run: dotnet test -p:CollectCoverage=true -c Debug -o sayit-${{ matrix.os }}-${{ github.sha }}
 
     - name: Upload debug artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: sayit-${{ matrix.os }}-${{ github.sha }}
         path: sayit-${{ matrix.os }}-${{ github.sha }}
@@ -47,12 +47,12 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.x'
+        dotnet-version: '9.x'
 
     - name: Set version variable (Linux and MacOS)
       if: matrix.config.id != 'win'
@@ -80,7 +80,7 @@ jobs:
         Compress-Archive -Path sayit-${{ env.VER }}-${{ matrix.config.id }}-sc -DestinationPath sayit-${{ env.VER }}-${{ matrix.config.id }}-sc.zip
 
     - name: Create draft release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         draft: true
         files: ./*.zip
