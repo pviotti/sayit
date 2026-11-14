@@ -29,7 +29,7 @@ jobs:
       run: dotnet test -p:CollectCoverage=true -c Debug -o sayit-${{ matrix.os }}-${{ github.sha }}
 
     - name: Upload debug artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: sayit-${{ matrix.os }}-${{ github.sha }}
         path: sayit-${{ matrix.os }}-${{ github.sha }}
