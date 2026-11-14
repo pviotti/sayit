@@ -42,7 +42,3 @@ module ``SayIt tests`` =
                 let featuresId = Regex.Replace((idStr[(idLen - 3)..(idLen - 1)]), @"[a-zA-Z]", String.Empty)
                 shorthandStr[0..2] |> should startWith (idStr[(idLen - 3)..(idLen - 1)])
                 featuresSh |> should equal featuresId
-
-
-[<EntryPoint>]
-let main argv = 0
